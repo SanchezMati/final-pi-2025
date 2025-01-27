@@ -7,6 +7,8 @@
 #define TICKETS 1
 #define INFRACTIONS 2
 
+#define ERROR -1
+
 int main(int argc, char* argv[])
 {
     if(argc != AMOUNT_OF_ARGUMENTS+1)
@@ -40,17 +42,43 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    // cityADT city = newCity();
+    cityADT city = newCity();
 
-    // if(city == NULL)
-    // {
-    //     fprintf(stderr, "Error: Creating CityADT\n");
-    //     fclose(tickets);
-    //     fclose(infractions);
-    //     exit(EXIT_FAILURE);
-    // }
+    if(city == NULL)
+    {
+        fprintf(stderr, "Error: Creating CityADT\n");
+        fclose(tickets);
+        fclose(infractions);
+        exit(EXIT_FAILURE);
+    }
 
-    // freeCity(city);
+    infractionsReader(infractions, city);
+    ticketsReader(tickets, city);
+
+    fclose(tickets) ;
+    fclose(infractions) ;
+
+    if (makeQuery1(city) == ERROR) 
+    {
+        handleQueryError(city, 1);
+    }
+
+    if (makeQuery2(city) == ERROR) 
+    {
+        handleQueryError(city, 2);
+    }
+
+    if (makeQuery3(city) == ERROR) 
+    {
+        handleQueryError(city, 3);
+    }
+
+    if (makeQuery4(city) == ERROR) 
+    {
+        handleQueryError(city, 4);
+    }
+
+    freeCity(city);
 
     puts("OK!");
     return 0;
