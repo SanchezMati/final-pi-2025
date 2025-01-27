@@ -1,0 +1,13 @@
+#Querys
+*.csv
+*.html
+
+#Codigos que objeto
+a.out
+*.o
+*.gch
+test
+
+#ides
+.vscode
+.idea
