@@ -20,28 +20,30 @@ typedef struct query1CDT
 }
 query1CDT;
 
-typedef struct query2CDT
-{
+// typedef struct query2CDT
+// {
     
-}
-query2CDT;
+// }
+// query2CDT;
 
-typedef struct query3CDT
-{
+// typedef struct query3CDT
+// {
     
-}
-query3CDT;
+// }
+// query3CDT;
 
-typedef struct query4CDT
-{
+// typedef struct query4CDT
+// {
     
-}
-query4CDT;
+// }
+// query4CDT;
 
 struct cityCDT
 {
     query1CDT query1;
-    query2CDT query2;
-    query3CDT query3;
-    query4CDT query4;
+    // query2CDT query2;
+    // query3CDT query3;
+    // query4CDT query4;
 };
+
+

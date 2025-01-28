@@ -35,26 +35,26 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    // cityADT city = newCity();
+    cityADT city = newCity();
 
-    // if(city == NULL)
-    // {
-    //     fprintf(stderr, "Error: Creating CityADT\n");
-    //     fclose(tickets);
-    //     fclose(infractions);
-    //     exit(EXIT_FAILURE);
-    // }
+    if(city == NULL)
+    {
+        fprintf(stderr, "Error: Creating CityADT\n");
+        fclose(tickets);
+        fclose(infractions);
+        exit(EXIT_FAILURE);
+    }
 
-    // infractionsReader(infractions, city);
-    // ticketsReader(tickets, city);
+    infractionsReader(infractions, city);
+    ticketsReader(tickets, city);
 
-    // fclose(tickets) ;
-    // fclose(infractions) ;
+    fclose(tickets) ;
+    fclose(infractions) ;
 
-    // if (makeQuery1(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 1);
-    // }
+    if (makeQuery1(city) == ERROR) 
+    {
+        handleQueryError(city, 1);
+    }
 
     // if (makeQuery2(city) == ERROR) 
     // {

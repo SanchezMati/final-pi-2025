@@ -3,4 +3,6 @@
 
 typedef struct cityCDT* cityADT;
 
+cityADT newCity(void);
+
 #endif
