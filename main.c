@@ -1,4 +1,6 @@
-#include "headers/main.h" //TODO: Cambiar a #include "main.h" en la version final
+//TODO: Agruegar los path en la compilacion con el flag -I
+#include "main.h" 
+#include "cityADT.h"
 
 int main(int argc, char* argv[])
 {
