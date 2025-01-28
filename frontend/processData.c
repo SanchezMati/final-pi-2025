@@ -6,45 +6,45 @@
 #define SIZE_LINE_TICKETS 65
 
 void infractionsReader(FILE * file, cityADT city) {
-    char line[SIZE_LINE_INFRACTIONS] ;
+    char line[SIZE_LINE_INFRACTIONS];
     while (fgets(line, sizeof(line), file)) {
-        char * infractionId = NULL ;
-        char * description = NULL ;
-        char * token = strtok(line, ";") ;
+        char * infractionId = NULL;
+        char * description = NULL;
+        char * token = strtok(line, ";");
         
         if ( token != NULL ) {
-            infractionId = token ;
+            infractionId = token;
         }
-        token = strtok(NULL, ";") ;
+        token = strtok(NULL, ";");
         if ( token != NULL ) {
-            description = token ;
+            description = token;
         }
-        addInfraction(city, infractionId, description) ;
+        addInfraction(city, infractionId, description);
     }
 }
 
 void ticketsReader(FILE * file, cityADT city) {
-    char line[SIZE_LINE_TICKETS] ;
+    char line[SIZE_LINE_TICKETS];
     if ( isNYC(file) ) {
         while (fgets(line, sizeof(line), file)) {
-            processNYCTicketLine(line, city) ;
+            processNYCTicketLine(line, city);
         }
     }
     else {
         while (fgets(line, sizeof(line), file)) {
-            processCHITicketLine(line, city) ;
+            processCHITicketLine(line, city);
         }
     }
 }
 
 void processNYCTicketLine(const char * line, cityADT city) {
-    char plate[LPLATE], agencyName[LAGENCY] ;
-    size_t infractionId, fineAmount, year, month, day ;
+    char plate[LPLATE], agencyName[LAGENCY];
+    size_t infractionId, fineAmount, year, month, day;
 
-    char * token = strtok((char *)line, ";") ;
-    strncpy(plate, token, LPLATE) ;
+    char * token = strtok((char *)line, ";");
+    strncpy(plate, token, LPLATE);
 
-    token = strtok(NULL, "-") ;
+    token = strtok(NULL, "-");
     year = atoi(token);
     token = strtok(NULL, "-");
     month = atoi(token) ;
@@ -52,7 +52,7 @@ void processNYCTicketLine(const char * line, cityADT city) {
     day = atoi(token);
 
     token = strtok(NULL, ";");
-    infractionId = (size_t)atoi(token) ;
+    infractionId = (size_t)atoi(token);
 
     token = strtok(NULL, ";");
     fineAmount = (size_t)atoi(token);
@@ -64,12 +64,12 @@ void processNYCTicketLine(const char * line, cityADT city) {
 }
 
 void processCHITicketLine(const char * line, cityADT city) {
-    char plate[LPLATE], agencyName[LAGENCY] ;
-    size_t infractionId, fineAmount, year, month, day ;
+    char plate[LPLATE], agencyName[LAGENCY];
+    size_t infractionId, fineAmount, year, month, day;
 
-    char * token = strtok((char *)line, "-") ;
+    char * token = strtok((char *)line, "-");
     year = atoi(token);
-    token = strtok(NULL, "-") ;
+    token = strtok(NULL, "-");
     month = atoi(token);
     token = strtok(NULL, "-");
     day = atoi(token) ;
@@ -81,7 +81,7 @@ void processCHITicketLine(const char * line, cityADT city) {
     strcpy(agencyName, token, LAGENCY);
 
     token = strtok(NULL, ";");
-    infractionId = (size_t)atoi(token) ;
+    infractionId = (size_t)atoi(token);
 
     token = strtok(NULL, ";");
     fineAmount = (size_t)atoi(token);
