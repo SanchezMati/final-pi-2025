@@ -16,7 +16,8 @@ typedef struct query1CDT
 {  
     tInfractionsByYear* first;
     tInfractionsByYear* iter;
-    char* infractions[MAX_AMOUNT_OF_CHARACTER+1]; //La idea es ir llenando en este vector con el nombre de las infracciones segun su indice. //EJ: la infraccion 48, BIKE LANE se guarda en infractions[47] = BIKE LANE;
+    char* infractions[MAX_AMOUNT_OF_CHARACTER+1]; //Vector con el nombre de las infracciones    
+    //La idea es ir llenando en este vector con el nombre de las infracciones segun su indice. //EJ: la infraccion 48, BIKE LANE se guarda en infractions[47] = BIKE LANE;
 }
 query1CDT;
 

@@ -20,3 +20,8 @@ static void handleQueryError(cityADT city, int queryNum)
     freeCity(city);
     exit(EXIT_FAILURE);
 }
+
+int makeQuery1(cityADT city)
+{
+    
+}
