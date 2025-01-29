@@ -11,14 +11,14 @@ int main(int argc, char* argv[])
 
 
     //Creo que no hace falta validarlo, (pag 4, enunciado)
-    // for (int i = 1; i <= AMOUNT_OF_ARGUMENTS; i++) 
-    // {
-    //     if (!isCsvFile(argv[i])) 
-    //     {
-    //         fprintf(stderr, "Error: The argument %s is not a .csv file.\n", argv[i]);
-    //         exit(EXIT_FAILURE);
-    //     }
-    // }
+    for (int i = 1; i <= AMOUNT_OF_ARGUMENTS; i++) 
+    {
+        if (!isCsvFile(argv[i])) 
+        {
+            fprintf(stderr, "Error: The argument %s is not a .csv file.\n", argv[i]);
+            exit(EXIT_FAILURE);
+        }
+    }
 
     FILE* tickets = fopen(argv[TICKETS], "r");
     if (tickets == NULL)
