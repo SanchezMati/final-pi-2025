@@ -2,10 +2,14 @@
 #include "cityADT.h"
 #include <stdio.h>
 
+#define LAGENCY (35 + 1) //35 chars + '\0'
+#define LPLATE (10 + 1)  //plates lenght
+ 
 #define SIZE_LINE_INFRACTIONS 32
 #define SIZE_LINE_TICKETS 65
 
-void infractionsReader(FILE * file, cityADT city) {
+void infractionsReader(FILE * file, cityADT city) 
+{
     char line[SIZE_LINE_INFRACTIONS];
     while (fgets(line, sizeof(line), file)) {
         char * infractionId = NULL;
@@ -23,7 +27,8 @@ void infractionsReader(FILE * file, cityADT city) {
     }
 }
 
-void ticketsReader(FILE * file, cityADT city) {
+void ticketsReader(FILE * file, cityADT city) 
+{
     char line[SIZE_LINE_TICKETS];
     if ( isNYC(file) ) {
         while (fgets(line, sizeof(line), file)) {
@@ -37,12 +42,14 @@ void ticketsReader(FILE * file, cityADT city) {
     }
 }
 
-void processNYCTicketLine(const char * line, cityADT city) {
+void processNYCTicketLine(const char * line, cityADT city) 
+{
     char plate[LPLATE], agencyName[LAGENCY];
     size_t infractionId, fineAmount, year, month, day;
 
     char * token = strtok((char *)line, ";");
-    strncpy(plate, token, LPLATE);
+    strncpy(plate, token, LPLATE - 1);
+    plate[LPLATE - 1] = '\0';
 
     token = strtok(NULL, "-");
     year = atoi(token);
@@ -63,7 +70,8 @@ void processNYCTicketLine(const char * line, cityADT city) {
     processTicket(city, plate, year, month, infractionId, fineAmount, agencyName);     
 }
 
-void processCHITicketLine(const char * line, cityADT city) {
+void processCHITicketLine(const char * line, cityADT city)
+{
     char plate[LPLATE], agencyName[LAGENCY];
     size_t infractionId, fineAmount, year, month, day;
 

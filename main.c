@@ -1,6 +1,5 @@
 //TODO: Agruegar los path en la compilacion con el flag -I
 #include "main.h" 
-#include "cityADT.h"
 
 int main(int argc, char* argv[])
 {
@@ -56,22 +55,22 @@ int main(int argc, char* argv[])
         handleQueryError(city, 1);
     }
 
-    // if (makeQuery2(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 2);
-    // }
+    if (makeQuery2(city) == ERROR) 
+    {
+        handleQueryError(city, 2);
+    }
 
-    // if (makeQuery3(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 3);
-    // }
+    if (makeQuery3(city) == ERROR) 
+    {
+        handleQueryError(city, 3);
+    }
 
-    // if (makeQuery4(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 4);
-    // }
+    if (makeQuery4(city) == ERROR) 
+    {
+        handleQueryError(city, 4);
+    }
 
-    // freeCity(city);
+    freeCity(city);
 
     puts("OK!");
     return 0;

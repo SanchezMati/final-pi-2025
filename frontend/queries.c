@@ -1,16 +1,4 @@
-#include <stdio.h>
-
-#define ERROR -1
-
-#define DELIMITER ";"
-
-#define QUERY1 "query1.csv"
-
-#define QUERY2 "query2.csv"
-
-#define QUERY3 "query3.csv"
-
-#define QUERY4 "query4.csv"
+#include "queries.h"
 
 static FILE* openFile(const char* query, const char* header)
 {
@@ -24,4 +12,11 @@ static FILE* openFile(const char* query, const char* header)
     fprintf(file, "%s\n", header);
 
     return file;
+}
+
+static void handleQueryError(cityADT city, int queryNum) 
+{
+    fprintf(stderr, "Error generating query %d\n", queryNum);
+    freeCity(city);
+    exit(EXIT_FAILURE);
 }
