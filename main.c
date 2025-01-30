@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    infractionsReader(infractions, city, fileType);
-    ticketsReader(tickets, city, fileType);
+    // infractionsReader(infractions, city, fileType);
+    // ticketsReader(tickets, city, fileType);
 
     fclose(tickets) ;
     fclose(infractions) ;
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     //     handleQueryError(city, 4);
     // }
 
-    // freeCity(city);
+    freeCity(city);
 
     puts("OK!");
     return 0;
