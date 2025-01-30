@@ -21,7 +21,9 @@ static void handleQueryError(cityADT city, int queryNum)
     exit(EXIT_FAILURE);
 }
 
+//TODO: 
 int makeQuery1(cityADT city)
 {
-    
+    puts("OK!");
+    return 0;
 }

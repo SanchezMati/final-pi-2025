@@ -1,20 +1,38 @@
 #include "dataValidation.h"
 
+enum fileType {INVALID = 0, NYC, CHI};
+
+
 int isCsvFile(const char *fileName) 
 {
-    const char *ext = strrchr(fileName, '.'); 
+    const char* ext = strrchr(fileName, '.'); 
     return ext != NULL && strcmp(ext, ".csv") == 0;
 }
 
-//No tiene muy buen estilo, practimanete repiten codigo con la funcion isCsvFile, se podrian juntar las tres en una 
-int isNYC(const char * fileName)
+static int isNYC(const char * fileName)
 {
-    const char *ext = strrchr(fileName, 'NYC'); 
-    return *ext != NULL && strcmp(ext, "NYC.csv") == 0;
+    const char* ext = strstr(fileName, "NYC"); 
+    return ext != NULL;
 }
 
-int isCHI(const char * fileName)
+static int isCHI(const char * fileName)
 {
-    const char *ext = strrchr(fileName, 'CHI'); 
-    return *ext != NULL && strcmp(ext, "CHI.csv") == 0;
+    const char* ext = strstr(fileName, "CHI"); 
+    return ext != NULL;
 }
+
+int isValidExecutable(const char* fileName)
+{
+    if(isNYC(fileName))
+    {
+        return NYC;
+    }
+    else if(isCHI(fileName))
+    {
+        return CHI;
+    }
+
+    return INVALID;
+}
+
+//ALL CHECK

@@ -1,6 +1,13 @@
 //TODO: Agruegar los path en la compilacion con el flag -I
 #include "main.h" 
 
+enum fileType {INVALID = 0, NYC, CHI};
+
+/*Este mismo enum se repite en los archivos de proccesData.c y dataValidation.c.
+no se si es de buen estilo o si seria mejor ponerlo todo en un solo archivo .h 
+e incluirlo en los tres archivos*/
+/*tal vez con agruegarlos en sus respectivos .h alcanze*/
+
 int main(int argc, char* argv[])
 {
     if(argc != AMOUNT_OF_ARGUMENTS+1)
@@ -9,6 +16,12 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
+    int fileType = isValidExecutable(argv[0]);
+    if(fileType == INVALID)
+    {
+        fprintf(stderr, "Error: The executable must end in NYC or CHI.\n");
+        exit(EXIT_FAILURE);
+    }
 
     //Creo que no hace falta validarlo, (pag 4, enunciado)
     for (int i = 1; i <= AMOUNT_OF_ARGUMENTS; i++) 
@@ -44,16 +57,16 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    infractionsReader(infractions, city);
-    ticketsReader(tickets, city);
+    infractionsReader(infractions, city, fileType);
+    ticketsReader(tickets, city, fileType);
 
     fclose(tickets) ;
     fclose(infractions) ;
 
-    if (makeQuery1(city) == ERROR) 
-    {
-        handleQueryError(city, 1);
-    }
+    // if (makeQuery1(city) == ERROR) 
+    // {
+    //     handleQueryError(city, 1);
+    // }
 
     // if (makeQuery2(city) == ERROR) 
     // {
@@ -70,7 +83,7 @@ int main(int argc, char* argv[])
     //     handleQueryError(city, 4);
     // }
 
-    freeCity(city);
+    // freeCity(city);
 
     puts("OK!");
     return 0;

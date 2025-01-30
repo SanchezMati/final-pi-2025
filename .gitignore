@@ -1,12 +1,13 @@
 #Querys
 *.csv
 *.html
+dataset
 
 #Codigos que objeto
 a.out
 *.o
 *.gch
-test
+test*
 
 #ides
 .vscode

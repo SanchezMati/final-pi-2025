@@ -6,7 +6,7 @@
 void infractionsReader(FILE * file, cityADT city);
 
 // Parses a file containing ticket data and updates the city's ticket and agency-related information
-void ticketsReader(FILE * file, cityADT city);
+void ticketsReader(FILE * file, cityADT city, int fileType);
 
 // Takes a line of input from a CSV file formatted for NYC parking tickets,
 // parses the data and updates the corresponding cityADT structure with the information.

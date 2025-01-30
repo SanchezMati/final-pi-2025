@@ -47,4 +47,8 @@ struct cityCDT
     // query4CDT query4;
 };
 
-
+void freeCity(cityADT city)
+{
+    //TODO:
+    return 0;
+}

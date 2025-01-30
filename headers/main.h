@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include "cityADT.h"
+#include "dataValidation.h"
 
 #define AMOUNT_OF_ARGUMENTS 2
 
