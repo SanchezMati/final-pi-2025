@@ -69,7 +69,7 @@ void processNYCTicketLine(const char * line, cityADT city)
     fineAmount = (size_t)atoi(token);
 
     token = strtok(NULL, ";");
-    strcpy(agencyName, token, LENTH_OF_AGENCY_NAME);
+    strncpy(agencyName, token, LENTH_OF_AGENCY_NAME);
 
     processTicket(city, plate, year, month, infractionId, fineAmount, agencyName);     
 }
@@ -87,10 +87,10 @@ void processCHITicketLine(const char * line, cityADT city)
     day = atoi(token) ;
 
     token = strtok(NULL, ";");
-    strcpy(plate, token, LENTH_OF_PLATES);
+    strncpy(plate, token, LENTH_OF_PLATES);
 
     token = strtok(NULL, ";");
-    strcpy(agencyName, token, LENTH_OF_AGENCY_NAME);
+    strncpy(agencyName, token, LENTH_OF_AGENCY_NAME);
 
     token = strtok(NULL, ";");
     infractionId = (size_t)atoi(token);
@@ -99,4 +99,4 @@ void processCHITicketLine(const char * line, cityADT city)
     fineAmount = (size_t)atoi(token);
 
     processTicket(city, plate, year, month, infractionId, fineAmount, agencyName);     
-}
+}   

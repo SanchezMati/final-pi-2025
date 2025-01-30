@@ -82,14 +82,9 @@ cityADT newCity(void)
     return city;
 }
 
-//TODO: Revisar las estructuras
-
-//TODO: Funciones para llenar la info de la query1
 void addTicket(cityADT city, int id, int year) //Esta funcion le podriamos agruegar mas cosas, ahora solo la hago para la query1, pero se podria adaptar
 {
-    char* name;
-    //TODO: Buscar el name en el vector de id's
-    city->first = addInfractionRec(city->first, name, year);
+    city->first = addInfractionRec(city->first, city->infractionsName[id-1], year);
 }
 
 static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year) //La funcion esta bien, esta check.
@@ -121,7 +116,7 @@ static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name
     return list;
 }
 
-int readInfractionName(cityADT city, int id, char* description)
+int addInfraction(cityADT city, int id, char* description)
 {
     errno = 0;  
     if(id > city->topID)
@@ -147,3 +142,35 @@ int readInfractionName(cityADT city, int id, char* description)
     return SUCCES;
 }
 
+void toBegin(cityADT city)
+{
+    city->iter = city->first;    
+}
+
+int hasNext(cityADT city)
+{
+    return city->iter != NULL;
+}
+
+char* next(cityADT city, int* year, int* tickets)
+{
+    errno = 0;
+    if(!hasNext(city))
+    {
+        exit(EXIT_FAILURE);  
+    }
+
+    *year = city->iter->year;
+    *tickets = city->iter->total;
+    
+    //Lo mismo, deberia haber una funcion que sea strCopy
+    int dim = strlen(city->iter->name) + 1;
+    char* name = malloc(sizeof(char)*dim);
+    if(errno == ENOMEM)
+    {
+        return ERROR;
+    }
+    strcpy(name, city->iter->name);
+    city->iter = city->iter->next;
+    return name;
+}
