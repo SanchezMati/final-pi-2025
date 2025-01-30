@@ -1,6 +1,4 @@
 #include "processData.h"
-#include "cityADT.h"
-#include <stdio.h>
 
 #define LENTH_OF_AGENCY_NAME (35 + 1) //35 chars + '\0'
 #define LENTH_OF_PLATES (10 + 1)  //plates lenght

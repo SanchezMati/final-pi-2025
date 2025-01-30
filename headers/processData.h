@@ -1,6 +1,8 @@
 #ifndef __PROCESS_DATA_H__
 #define __PROCESS_DATA_H__
+
 #include "cityADT.h"
+#include <stdio.h>
 
 // Parses a file containing infraction data and updates the city's infractions information
 void infractionsReader(FILE * file, cityADT city);
