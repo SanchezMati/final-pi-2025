@@ -13,3 +13,6 @@ test*
 .vscode
 .idea
 .json
+
+#test
+pytutor.c

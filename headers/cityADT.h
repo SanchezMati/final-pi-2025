@@ -2,6 +2,9 @@
 #define __CITY_ADT_H__
 
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct cityCDT* cityADT;
 
@@ -10,4 +13,7 @@ typedef struct cityCDT* cityADT;
 cityADT newCity(void);
 
 void freeCity(cityADT city);
+
+int readInfractionName(cityADT city, int id, char* description);
+
 #endif

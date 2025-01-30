@@ -1,13 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "cityADT.h"
 
 #define MAX_AMOUNT_OF_CHARACTER 50
+#define NULL_ID -1
+
+enum status {ERROR = 0, SUCCES};
 
 typedef struct infractionsByYear
 {
     char name[MAX_AMOUNT_OF_CHARACTER+1]; //Nombre de la infraccion
-    int year; //Anio de la infraccion
+    int year; //Anio de la 
+    size_t total; //Cantidad de esa infraccion emitida en ese anio
+
     struct infractionsByYear* next;
 }
 tInfractionsByYear;
@@ -17,7 +20,8 @@ struct cityCDT
     //Query1 =================
     tInfractionsByYear* first;
     tInfractionsByYear* iter;
-    char** infractions; //Vector con el nombre de las infracciones    
+
+    char** infractionsName; //Vector con el nombre de las infracciones    
     int topID;
     //La idea es ir llenando en este vector con el nombre de las infracciones segun su indice. //EJ: la infraccion 48, BIKE LANE se guarda en infractions[47] = BIKE LANE;
     /*========================*/
@@ -37,7 +41,7 @@ void freeCity(cityADT city)
 static void freeQuery1(cityADT city)
 {
     freeQuery1Rec(city->first);
-    freeInfractions(city->infractions, city->topID);
+    freeInfractions(city->infractionsName, city->topID);
 }
 
 static void freeQuery1Rec(tInfractionsByYear* list)
@@ -70,17 +74,76 @@ cityADT newCity(void)
         return NULL;
     }
 
-    city->first = malloc(sizeof(tInfractionsByYear));
-    if(city->first == NULL || errno == ENOMEM)
-    {
-        return NULL;
-    }
-    
-    city->infractions = NULL;
-    city->first->next = NULL;
-    city->topID = 0;
+    city->first = NULL;
+    city->iter = NULL;
+    city->infractionsName = NULL;
+    city->topID = NULL_ID;
 
     return city;
 }
 
-//PROBAR NEWCITY EN PYTUTOR
+//TODO: Revisar las estructuras
+
+//TODO: Funciones para llenar la info de la query1
+void addTicket(cityADT city, int id, int year) //Esta funcion le podriamos agruegar mas cosas, ahora solo la hago para la query1, pero se podria adaptar
+{
+    char* name;
+    //TODO: Buscar el name en el vector de id's
+    city->first = addInfractionRec(city->first, name, year);
+}
+
+static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year) //La funcion esta bien, esta check.
+{
+    int c;
+    if(list == NULL || (c = strcmp(list->name, name)) > 0 || (c == 0 && list->year > year)) 
+    {
+        errno = 0;
+        tInfractionsByYear* aux = malloc(sizeof(tInfractionsByYear));
+        if(aux == NULL || errno == ENOMEM)
+        {
+            return list;
+        }
+        strcpy(aux->name, name);
+        aux->year = year;
+        aux->total = 1;
+        aux->next = list;
+        return aux;
+    }
+    if(c == 0 && (list->year == year)) //Son iguales, desempata el anio
+    {
+        list->total++;
+        return list;
+        
+    }
+    //Caso list->year < year -> sigo buscando ||
+    //Caso c < 0 -> name va despues de list->name, sigo buscando su lugar
+    list->next = addInfractionRec(list->next, name, year);
+    return list;
+}
+
+int readInfractionName(cityADT city, int id, char* description)
+{
+    errno = 0;  
+    if(id > city->topID)
+    {
+        city->infractionsName = realloc(sizeof(char*), id);
+        if(city->infractionsName == NULL || errno == ENOMEM)
+        {
+            return ERROR;
+        }
+        city->topID = id;
+    }
+
+    //Para hacerlo mas eficiente podriamos crear una funcion que realoque de a bloques
+    int dim = strlen(description) + 1;
+    city->infractionsName[id-1] = malloc(sizeof(char)*dim);
+    //No se si esta validacion es correcta
+    if(errno == ENOMEM)
+    {
+        return ERROR;
+    }
+
+    strcpy(city->infractionsName[id-1], description);
+    return SUCCES;
+}
+
