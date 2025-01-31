@@ -1,5 +1,5 @@
 # Variables
-CC = clang
+CC = gcc
 FLAGS = -Wall -pedantic -std=c99 
 SANITIZE = -fsanitize=address -g
 INCLUDES = -I headers
