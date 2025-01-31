@@ -31,6 +31,8 @@ struct cityCDT
 static void freeQuery1(cityADT city);
 static void freeQuery1Rec(tInfractionsByYear* list);
 static void freeInfractions(char** v, int dim);
+static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year);
+
 
 void freeCity(cityADT city)
 {
@@ -82,7 +84,7 @@ cityADT newCity(void)
     return city;
 }
 
-void addTicket(cityADT city, int id, int year) //Esta funcion le podriamos agruegar mas cosas, ahora solo la hago para la query1, pero se podria adaptar
+void addTicketToMakeQuery1(cityADT city, int id, int year) //Esta funcion le podriamos agruegar mas cosas, ahora solo la hago para la query1, pero se podria adaptar
 {
     city->first = addInfractionRec(city->first, city->infractionsName[id-1], year);
 }
@@ -121,23 +123,24 @@ int addInfraction(cityADT city, int id, char* description)
     errno = 0;  
     if(id > city->topID)
     {
-        city->infractionsName = realloc(sizeof(char*), id);
-        if(city->infractionsName == NULL || errno == ENOMEM)
+        char** aux = realloc(city->infractionsName, sizeof(char*)*id);
+        if(aux == NULL || errno == ENOMEM)
         {
             return ERROR;
         }
+        city->infractionsName = aux;    
         city->topID = id;
     }
 
     //Para hacerlo mas eficiente podriamos crear una funcion que realoque de a bloques
     int dim = strlen(description) + 1;
+    printf("In cityADT.c -> id=%d\n", id);
     city->infractionsName[id-1] = malloc(sizeof(char)*dim);
     //No se si esta validacion es correcta
     if(errno == ENOMEM)
     {
         return ERROR;
     }
-
     strcpy(city->infractionsName[id-1], description);
     return SUCCES;
 }

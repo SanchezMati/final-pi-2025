@@ -8,8 +8,6 @@
 
 typedef struct cityCDT* cityADT;
 
-//TODO: Comentar lo que hace cada funcion
-
 //Crea un nuevo TAD
 cityADT newCity(void);
 
@@ -20,7 +18,7 @@ void freeCity(cityADT city);
 int addInfraction(cityADT city, int id, char* description);
 
 //Agruega un ticket 
-void addTicket(cityADT city, int id, int year);
+void addTicketToMakeQuery1(cityADT city, int id, int year);
 
 //Funciones de iteracion para la query1
 void toBegin(cityADT city);

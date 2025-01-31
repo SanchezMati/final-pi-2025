@@ -57,16 +57,16 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    infractionsReader(infractions, city, fileType);
+    infractionsReader(infractions, city);
     ticketsReader(tickets, city, fileType);
 
     fclose(tickets) ;
     fclose(infractions) ;
 
-    if (makeQuery1(city) == ERROR) 
-    {
-        handleQueryError(city, 1);
-    }
+    // if (makeQuery1(city) == ERROR) 
+    // {
+    //     handleQueryError(city, 1);
+    // }
 
     // if (makeQuery2(city) == ERROR) 
     // {

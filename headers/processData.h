@@ -18,4 +18,7 @@ void processNYCTicketLine(const char * line, cityADT city);
 // parses the data and updates the corresponding cityADT structure with the information.
 void processCHITicketLine(const char * line, cityADT city);
 
+void processTicket(cityADT city, char plate[], int year, int day, int month, int id, int fineAmount, char agencyName[]);
+
+
 #endif

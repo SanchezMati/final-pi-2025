@@ -1,15 +1,16 @@
 # Variables
 CC = gcc
-FLAGS = -Wall -pedantic -std=c99 -fsanitize=address -g
+FLAGS = -Wall -pedantic -std=c99 
+SANITIZE = -fsanitize=address -g
 INCLUDES = -I headers
 OUTPUT_FILE = test.NYC
 SOURCE_FILE = main.c
 BACKEND = backend/cityADT.c
-FRONTEND = frontend/dataValidation.c
+FRONTEND = frontend/dataValidation.c frontend/processData.c
 
 # Regla principal para compilar y ejecutar
 test: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE)
 
 # Limpieza de archivos generados
 clean:
