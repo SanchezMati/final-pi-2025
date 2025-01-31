@@ -8,74 +8,113 @@
 
 enum fileType {INVALID = 0, NYC, CHI};
 
-void infractionsReader(FILE * file, cityADT city) 
-{   
+void infractionsReader(FILE * file, cityADT city) {   
     char line[SIZE_LINE_INFRACTIONS];
-    fgets(line, sizeof(line), file); //Correciones
+    fgets(line, sizeof(line), file);
+    
     while (fgets(line, sizeof(line), file)) {
         char * infractionId = NULL;
         char * description = NULL;
         char * token = strtok(line, ";");
         
-        if ( token != NULL ) {
+        if (token != NULL) {
             infractionId = token;
+            token = strtok(NULL, "\n"); 
+            if (token != NULL) {
+                description = token;
+                
+                char *newline = strchr(description, '\n');
+                if (newline) *newline = '\0';
+                
+                int id = atoi(infractionId);
+                if (id > 0) {  
+                    addInfraction(city, id, description);
+                }
+            }
         }
-        token = strtok(NULL, ";");
-        if ( token != NULL ) {
-            description = token;
-        }
-        printf("Antes de ATOI -> id=%s\n", infractionId);
-        int id = atoi(infractionId);
-        printf("In processData.c -> id=%d\n", id);
-        addInfraction(city, id, description);
     }
 }
 
 void ticketsReader(FILE * file, cityADT city, int fileType) 
 {
     char line[SIZE_LINE_TICKETS];
+    
+    fgets(line, sizeof(line), file);
+    
     if (fileType == NYC) 
     {
         while (fgets(line, sizeof(line), file)) 
         {
-            processNYCTicketLine(line, city);
+            if (strlen(line) > 0) {
+                processNYCTicketLine(line, city);
+            }
         }
     }
     else
     {
         while (fgets(line, sizeof(line), file)) 
         {
-            processCHITicketLine(line, city);
+            if (strlen(line) > 0) {
+                processCHITicketLine(line, city);
+            }
         }
     }
 }
 
+
 void processNYCTicketLine(const char * line, cityADT city) 
 {
-    char plate[LENTH_OF_PLATES], agencyName[LENTH_OF_AGENCY_NAME];
-    int infractionId, fineAmount, year, month, day;
+    if (line == NULL || city == NULL) {
+        return;
+    }
 
-    char * token = strtok((char *)line, ";");
+    char plate[LENTH_OF_PLATES] = {0};
+    char agencyName[LENTH_OF_AGENCY_NAME] = {0};
+    int infractionId = 0, fineAmount = 0, year = 0, month = 0, day = 0;
+
+    char lineCopy[SIZE_LINE_TICKETS];
+    strncpy(lineCopy, line, SIZE_LINE_TICKETS - 1);
+    lineCopy[SIZE_LINE_TICKETS - 1] = '\0';
+
+    char* token = strtok(lineCopy, ";");
+    if (token == NULL) return;
     strncpy(plate, token, LENTH_OF_PLATES - 1);
     plate[LENTH_OF_PLATES - 1] = '\0';
 
     token = strtok(NULL, "-");
+    if (token == NULL) return;
     year = atoi(token);
+    
     token = strtok(NULL, "-");
-    month = atoi(token) ;
-    token = strtok(NULL, "-");
+    if (token == NULL) return;
+    month = atoi(token);
+    
+    token = strtok(NULL, ";");  
+    if (token == NULL) return;
     day = atoi(token);
 
     token = strtok(NULL, ";");
-    infractionId = (int)atoi(token);
+    if (token == NULL) return;
+    infractionId = atoi(token);
 
     token = strtok(NULL, ";");
-    fineAmount = (int)atoi(token);
+    if (token == NULL) return;
+    fineAmount = atoi(token);
 
-    token = strtok(NULL, ";");
-    strncpy(agencyName, token, LENTH_OF_AGENCY_NAME);
+    token = strtok(NULL, "\n");
+    if (token == NULL) return;
+    strncpy(agencyName, token, LENTH_OF_AGENCY_NAME - 1);
+    agencyName[LENTH_OF_AGENCY_NAME - 1] = '\0';
 
-    processTicket(city, plate, year, day, month, infractionId, fineAmount, agencyName);     
+    char* p = agencyName + strlen(agencyName) - 1;
+    while (p >= agencyName && (*p == ' ' || *p == '\n' || *p == '\r')) {
+        *p = '\0';
+        p--;
+    }
+
+    if (year > 0 && month > 0 && day > 0 && infractionId > 0) {
+        processTicket(city, plate, year, day, month, infractionId, fineAmount, agencyName);
+    }
 }
 
 void processCHITicketLine(const char * line, cityADT city)
@@ -107,5 +146,11 @@ void processCHITicketLine(const char * line, cityADT city)
 
 void processTicket(cityADT city, char plate[], int year, int day, int month, int id, int fineAmount, char agencyName[])
 {
+    if (city == NULL || plate == NULL || agencyName == NULL || 
+        id <= 0 || year <= 0 || month <= 0 || month > 12 || 
+        day <= 0 || day > 31 || fineAmount < 0) {
+        return;
+    }
+    
     addTicketToMakeQuery1(city, id, year);
 }

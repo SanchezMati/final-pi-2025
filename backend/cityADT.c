@@ -3,7 +3,7 @@
 #define MAX_AMOUNT_OF_CHARACTER 50
 #define NULL_ID -1
 
-enum status {ERROR = 0, SUCCES};
+enum status {ERROR = 0, SUCCESS};
 
 typedef struct infractionsByYear
 {
@@ -118,32 +118,40 @@ static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name
     return list;
 }
 
-int addInfraction(cityADT city, int id, char* description)
-{
+int addInfraction(cityADT city, int id, char* description) {
+    if (city == NULL || description == NULL || id <= 0) {
+        return ERROR;
+    }
+
     errno = 0;  
-    if(id > city->topID)
-    {
-        char** aux = realloc(city->infractionsName, sizeof(char*)*id);
-        if(aux == NULL || errno == ENOMEM)
-        {
+    if(id > city->topID) {
+        // Allocate array of pointers
+        char** aux = realloc(city->infractionsName, sizeof(char*) * id);
+        if(aux == NULL || errno == ENOMEM) {
             return ERROR;
         }
+        
+        // Initialize new pointers to NULL
+        for(int i = city->topID + 1; i < id; i++) {
+            aux[i] = NULL;
+        }
+        
         city->infractionsName = aux;    
         city->topID = id;
     }
 
-    //Para hacerlo mas eficiente podriamos crear una funcion que realoque de a bloques
-    int dim = strlen(description) + 1;
-    printf("In cityADT.c -> id=%d\n", id);
-    city->infractionsName[id-1] = malloc(sizeof(char)*dim);
-    //No se si esta validacion es correcta
-    if(errno == ENOMEM)
-    {
+    size_t dim = strlen(description) + 1;
+    city->infractionsName[id-1] = malloc(dim * sizeof(char));
+    if(city->infractionsName[id-1] == NULL || errno == ENOMEM) {
         return ERROR;
     }
-    strcpy(city->infractionsName[id-1], description);
-    return SUCCES;
+    
+    strncpy(city->infractionsName[id-1], description, dim);
+    city->infractionsName[id-1][dim-1] = '\0'; 
+    
+    return SUCCESS;
 }
+
 
 void toBegin(cityADT city)
 {
@@ -155,23 +163,18 @@ int hasNext(cityADT city)
     return city->iter != NULL;
 }
 
-char* next(cityADT city, int* year, int* tickets)
-{
-    errno = 0;
-    if(!hasNext(city))
-    {
-        exit(EXIT_FAILURE);  
+char* next(cityADT city, int* year, int* tickets) {
+    if(!hasNext(city)) {
+        return NULL; 
     }
 
     *year = city->iter->year;
     *tickets = city->iter->total;
     
-    //Lo mismo, deberia haber una funcion que sea strCopy
     int dim = strlen(city->iter->name) + 1;
     char* name = malloc(sizeof(char)*dim);
-    if(errno == ENOMEM)
-    {
-        return ERROR;
+    if(name == NULL || errno == ENOMEM) {
+        return NULL;  
     }
     strcpy(name, city->iter->name);
     city->iter = city->iter->next;

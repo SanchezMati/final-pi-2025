@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ERROR -1
+#define FILE_ERROR NULL
+#define ERROR 0
+#define SUCCESS 1
 
 #define DELIMITER ";"
 
@@ -17,6 +19,7 @@
 
 #define QUERY4 "query4.csv"
 
+void handleQueryError(cityADT city, int queryNum);
 int makeQuery1(cityADT city);
 
 #endif

@@ -63,10 +63,10 @@ int main(int argc, char* argv[])
     fclose(tickets) ;
     fclose(infractions) ;
 
-    // if (makeQuery1(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 1);
-    // }
+    if (makeQuery1(city) == ERROR) 
+    {
+        handleQueryError(city, 1);
+    }
 
     // if (makeQuery2(city) == ERROR) 
     // {

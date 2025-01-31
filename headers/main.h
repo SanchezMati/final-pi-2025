@@ -7,12 +7,11 @@
 #include "cityADT.h"
 #include "dataValidation.h"
 #include "processData.h"
+#include "queries.h" 
 
 #define AMOUNT_OF_ARGUMENTS 2
 
 #define TICKETS 1
 #define INFRACTIONS 2
-
-#define ERROR -1
 
 #endif
