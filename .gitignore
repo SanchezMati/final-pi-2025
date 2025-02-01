@@ -16,3 +16,6 @@ test*
 
 #test
 pytutor.c
+
+# Mac
+.DS_Store
