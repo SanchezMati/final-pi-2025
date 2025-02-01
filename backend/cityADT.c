@@ -2,6 +2,8 @@
 
 #define MAX_AMOUNT_OF_CHARACTER 50
 #define NULL_ID -1
+#define BLOCK 25
+
 
 enum status {ERROR = 0, SUCCESS};
 
@@ -28,6 +30,7 @@ struct cityCDT
 };
 
 //HEADERS de funciones ocultas
+static void dinamic_strcpy(char** dest, const char* src);
 static void freeQuery1(cityADT city);
 static void freeQuery1Rec(tInfractionsByYear* list);
 static void freeInfractions(char** v, int dim);
@@ -140,14 +143,10 @@ int addInfraction(cityADT city, int id, char* description) {
         city->topID = id;
     }
 
-    size_t dim = strlen(description) + 1;
-    city->infractionsName[id-1] = malloc(dim * sizeof(char));
+    dinamic_strcpy(&(city->infractionsName[id-1]), description);
     if(city->infractionsName[id-1] == NULL || errno == ENOMEM) {
         return ERROR;
     }
-    
-    strncpy(city->infractionsName[id-1], description, dim);
-    city->infractionsName[id-1][dim-1] = '\0'; 
     
     return SUCCESS;
 }
@@ -171,12 +170,37 @@ char* next(cityADT city, int* year, int* tickets) {
     *year = city->iter->year;
     *tickets = city->iter->total;
     
-    int dim = strlen(city->iter->name) + 1;
-    char* name = malloc(sizeof(char)*dim);
-    if(name == NULL || errno == ENOMEM) {
+    char* name;
+    dinamic_strcpy(&name, city->iter->name);
+    if(name == NULL || errno == ENOMEM) 
+    {
         return NULL;  
     }
-    strcpy(name, city->iter->name);
     city->iter = city->iter->next;
     return name;
+}
+
+static void dinamic_strcpy(char** dest, const char* src)
+{   
+    errno = 0;
+    int i;
+    char* aux = NULL;
+    for(i = 0; src[i] != '\0'; i++)
+    {
+        if(i%BLOCK == 0)
+        {
+            aux = realloc(aux, i+BLOCK);
+            if(aux == NULL || errno == ENOMEM)
+            {
+                *dest = NULL;
+            }
+        }
+        aux[i] = src[i];
+    }
+
+    aux = realloc(aux, i+1);
+    aux[i] = '\0';
+
+    *dest = aux;
+    return ;
 }
