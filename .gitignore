@@ -9,6 +9,11 @@ a.out
 *.gch
 parkingTickets*
 
+# Archivos de depuración
+*.dSYM/
+*.dSYM/**
+*.yml
+
 #ides
 .vscode
 .idea
