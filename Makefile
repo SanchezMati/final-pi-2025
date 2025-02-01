@@ -10,10 +10,10 @@ FRONTEND = frontend/dataValidation.c frontend/processData.c frontend/queries.c
 all: parkingTicketsNYC parkingTicketsCHI
 
 parkingTicketsNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o test.NYC
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o parkingTicketsNYC
 
 parkingTicketsCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o test.CHI
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o parkingTicketsCHI
 
 # Limpieza de archivos generados
 clean:
