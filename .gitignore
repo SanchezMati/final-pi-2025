@@ -13,6 +13,7 @@ test*
 .vscode
 .idea
 .json
+.DS_Store
 
 #test
 pytutor.c

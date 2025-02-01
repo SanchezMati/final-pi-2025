@@ -22,6 +22,6 @@ void handleQueryError(cityADT city, int queryNum)
 //TODO: 
 int makeQuery1(cityADT city)
 {
-    puts("OK!");
-    return 0;
-}
+    puts("Query1!");
+    return 1;
+}       
