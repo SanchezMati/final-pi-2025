@@ -7,7 +7,7 @@ dataset
 a.out
 *.o
 *.gch
-test*
+parkingTickets*
 
 #ides
 .vscode

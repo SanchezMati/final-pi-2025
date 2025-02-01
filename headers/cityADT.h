@@ -6,6 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_AMOUNT_OF_CHARACTER 50
+#define AGENCY_NAME 35
+#define PLATE 10
+#define NULL_ID -1
+
+enum status {ERROR = 0, SUCCESS};
+
 typedef struct cityCDT* cityADT;
 
 //Crea un nuevo TAD

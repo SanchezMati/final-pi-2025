@@ -7,16 +7,16 @@ SOURCE_FILE = main.c
 BACKEND = backend/cityADT.c
 FRONTEND = frontend/dataValidation.c frontend/processData.c frontend/queries.c
 
-all: test.NYC test.CHI
+all: parkingTicketsNYC parkingTicketsCHI
 
-test.NYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
+parkingTicketsNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o test.NYC
 
-test.CHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
+parkingTicketsCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o test.CHI
 
 # Limpieza de archivos generados
 clean:
-	rm -f test.NYC test.CHI
+	rm -f parkingTicketsNYC parkingTicketsCHI
 
 

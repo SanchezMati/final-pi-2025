@@ -1,14 +1,23 @@
 #include "cityADT.h"
 
-#define MAX_AMOUNT_OF_CHARACTER 50
-#define NULL_ID -1
+typedef struct plateNode {
+    char plate[PLATE+1];        // Patente
+    size_t total;               // Suma total de montos de multas para esta patente
+    struct plateNode* next;     
+} tPlateNode;
 
-enum status {ERROR = 0, SUCCESS};
+typedef struct agencyNode {
+    char name[AGENCY_NAME+1];   // Nombre de la agencia
+    char topPlate[PLATE+1];     // Patente con mayor recaudación para esta agencia
+    size_t maxTotal;            // Monto total de multas de la topPlate
+    tPlateNode* plates;         // Lista de patentes y sus montos totales
+    struct agencyNode* next;   
+} tAgencyNode;
 
 typedef struct infractionsByYear
 {
-    char name[MAX_AMOUNT_OF_CHARACTER+1]; //Nombre de la infraccion
-    int year; //Anio de la 
+    char name[MAX_AMOUNT_OF_CHARACTER+1]; // Nombre de la infraccion
+    int year; //Anio de la infracción
     size_t total; //Cantidad de esa infraccion emitida en ese anio
 
     struct infractionsByYear* next;
@@ -25,6 +34,10 @@ struct cityCDT
     int topID;
     //La idea es ir llenando en este vector con el nombre de las infracciones segun su indice. //EJ: la infraccion 48, BIKE LANE se guarda en infractions[47] = BIKE LANE;
     /*========================*/
+
+    // Query 2
+    tAgencyNode* firstAgency;
+    tAgencyNode* agencyIter;
 };
 
 //HEADERS de funciones ocultas
