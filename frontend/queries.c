@@ -22,6 +22,21 @@ void handleQueryError(cityADT city, int queryNum)
 //TODO: 
 int makeQuery1(cityADT city)
 {
-    puts("Query1!");
-    return 1;
+    FILE* file = openFile(QUERY1, HEADER1);
+    if(file == FILE_ERROR) 
+    {
+        return ERROR;
+    }
+
+    toBegin(city);
+    while(hasNext(city))
+    {
+        int year;
+        int tickets;
+        char* infraction = next(city, &year, &tickets);
+        fprintf(file, "%s%s%d%s%d\n", infraction, DELIMITER, year, DELIMITER, tickets);
+        free(infraction);
+    }
+    fclose(file);
+    return SUCCESS;
 }       

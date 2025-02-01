@@ -21,10 +21,18 @@ int addInfraction(cityADT city, int id, char* description);
 void addTicketToMakeQuery1(cityADT city, int id, int year);
 
 //Funciones de iteracion para la query1
+
+//Setea el iterador al inicio de la lista
 void toBegin(cityADT city);
 
+//Devuelve 0 si no hay otro nodo en la lista 1 si hay
 int hasNext(cityADT city);
 
+//@parametros:
+
+//@year: devuelve por punteros el anio de la infraccion
+//@tickets: devuelve la cantiadad de infracciones 
+//devuelve una copia del nombre de la infraccion 
 char* next(cityADT city, int* year, int* tickets);
 
 #endif

@@ -6,12 +6,12 @@
 #include <stdlib.h>
 
 #define FILE_ERROR NULL
-#define ERROR 0
-#define SUCCESS 1
+enum status {ERROR=0, SUCCESS};
 
 #define DELIMITER ";"
 
 #define QUERY1 "query1.csv"
+#define HEADER1 "Infraction;Year;Amount"
 
 #define QUERY2 "query2.csv"
 

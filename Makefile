@@ -8,6 +8,7 @@ OUTPUT_FILE_CHI = test.CHI
 SOURCE_FILE = main.c
 BACKEND = backend/cityADT.c
 FRONTEND = frontend/dataValidation.c frontend/processData.c frontend/queries.c
+QUERY1 = "query1.csv"
 
 # Regla principal para compilar y ejecutar
 testNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
@@ -19,5 +20,5 @@ testCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 
 # Limpieza de archivos generados
 clean:
-	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC)
+	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERY1)
 

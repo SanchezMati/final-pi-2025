@@ -34,5 +34,3 @@ int isValidExecutable(const char* fileName)
 
     return INVALID;
 }
-
-//ALL CHECK
