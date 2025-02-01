@@ -13,6 +13,8 @@ test*
 .vscode
 .idea
 .json
+
+#Clang
 .DS_Store
 
 #test
