@@ -37,14 +37,19 @@ void infractionsReader(FILE * file, cityADT city) {
 
 void ticketsReader(FILE * file, cityADT city, int fileType) 
 {
+
     char line[SIZE_LINE_TICKETS];
+    printf("Starting ticketsReader with fileType=%d\n", fileType);
     
     fgets(line, sizeof(line), file);
+    printf("Header read: %s", line);
     
     if (fileType == NYC) 
     {
+        printf("Processing NYC file\n");
         while (fgets(line, sizeof(line), file)) 
         {
+            printf("Reading line: %s", line);
             if (strlen(line) > 0) {
                 processNYCTicketLine(line, city);
             }
@@ -171,11 +176,15 @@ void processCHITicketLine(const char * line, cityADT city)
 
 void processTicket(cityADT city, char plate[], int year, int day, int month, int id, int fineAmount, char agencyName[])
 {
+    printf("\nProcessing ticket: plate=%s, agency=%s, amount=%d\n", plate, agencyName, fineAmount);
     if (city == NULL || plate == NULL || agencyName == NULL || 
         id <= 0 || year <= 0 || month <= 0 || month > 12 || 
         day <= 0 || day > 31 || fineAmount < 0) {
+        printf("Invalid data in processTicket!\n");
         return;
     }
     
     addTicketToMakeQuery1(city, id, year);
+    addTicket(city, agencyName, plate, fineAmount);
+    printf("Ticket processed successfully\n");
 }

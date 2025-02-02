@@ -18,5 +18,3 @@ parkingTicketsCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 # Limpieza de archivos generados
 clean:
 	rm -f parkingTicketsNYC parkingTicketsCHI
-
-
