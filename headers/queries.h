@@ -6,7 +6,6 @@
 #include <stdlib.h>
 
 #define FILE_ERROR NULL
-enum status {ERROR=0, SUCCESS};
 
 #define DELIMITER ";"
 

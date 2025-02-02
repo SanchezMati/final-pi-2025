@@ -20,9 +20,9 @@ void handleQueryError(cityADT city, int queryNum)
     exit(EXIT_FAILURE);
 }
 
-//TODO: 
 int makeQuery1(cityADT city)
 {
+    printf("\n=== Starting Query 1 ===\n");
     FILE* file = openFile(QUERY1, HEADER1);
     if(file == FILE_ERROR) 
     {
@@ -39,6 +39,7 @@ int makeQuery1(cityADT city)
         free(infraction);
     }
     fclose(file);
+    printf("=== Query 1 Completed ===\n");
     return SUCCESS;
 }
 
@@ -59,8 +60,7 @@ int makeQuery2(cityADT city)
     
     while(hasNextQuery2(city)) {
         nextQuery2(city, agencyName, topPlate, &total);
-        printf("Processing: agency=%s, plate=%s, total=%zu\n", 
-               agencyName, topPlate, total);
+        // printf("Processing: agency=%s, plate=%s, total=%zu\n", agencyName, topPlate, total);
         fprintf(file, "%s;%s;%zu\n", agencyName, topPlate, total);
     }
     

@@ -49,7 +49,7 @@ void ticketsReader(FILE * file, cityADT city, int fileType)
         printf("Processing NYC file\n");
         while (fgets(line, sizeof(line), file)) 
         {
-            printf("Reading line: %s", line);
+           // printf("Reading line: %s", line);
             if (strlen(line) > 0) {
                 processNYCTicketLine(line, city);
             }
@@ -176,7 +176,7 @@ void processCHITicketLine(const char * line, cityADT city)
 
 void processTicket(cityADT city, char plate[], int year, int day, int month, int id, int fineAmount, char agencyName[])
 {
-    printf("\nProcessing ticket: plate=%s, agency=%s, amount=%d\n", plate, agencyName, fineAmount);
+   // printf("\nProcessing ticket: plate=%s, agency=%s, amount=%d\n", plate, agencyName, fineAmount);
     if (city == NULL || plate == NULL || agencyName == NULL || 
         id <= 0 || year <= 0 || month <= 0 || month > 12 || 
         day <= 0 || day > 31 || fineAmount < 0) {
@@ -184,7 +184,9 @@ void processTicket(cityADT city, char plate[], int year, int day, int month, int
         return;
     }
     
+    
     addTicketToMakeQuery1(city, id, year);
+    //TODO: Cambiar nombre a addTicketToMakeQuery2
     addTicket(city, agencyName, plate, fineAmount);
-    printf("Ticket processed successfully\n");
+   // printf("Ticket processed successfully\n");
 }
