@@ -10,6 +10,7 @@ BACKEND = backend/cityADT.c
 FRONTEND = frontend/dataValidation.c frontend/processData.c frontend/queries.c
 QUERY1 = "query1.csv"
 
+
 # Regla principal para compilar y ejecutar
 testNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE_NYC)
@@ -20,5 +21,15 @@ testCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 
 # Limpieza de archivos generados
 clean:
-	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERY1)
+	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERY1) parkingTicketsNYC parkingTicketsCHI
+
+
+all: parkingTicketsNYC parkingTicketsCHI
+
+parkingTicketsNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o parkingTicketsNYC
+
+parkingTicketsCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o parkingTicketsCHI
+
 

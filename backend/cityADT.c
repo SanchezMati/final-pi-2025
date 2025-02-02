@@ -4,14 +4,25 @@
 #define NULL_ID -1
 #define BLOCK 25
 
+typedef struct plateNode {
+    char plate[PLATE+1];        // Plate
+    size_t total;               // Total sum of fine amounts for this plate
+    struct plateNode* next;     
+} tPlateNode;
 
-enum status {ERROR = 0, SUCCESS};
+typedef struct agencyNode {
+    char name[AGENCY_NAME+1];   // Agency name
+    char topPlate[PLATE+1];     // Plate with highest grossing for this agency
+    size_t maxTotal;            // Total amount of topPlate fines
+    tPlateNode* plates;         // List of plates and their total amounts
+    struct agencyNode* next;   
+} tAgencyNode;
 
 typedef struct infractionsByYear
 {
-    char name[MAX_AMOUNT_OF_CHARACTER+1]; //Nombre de la infraccion
-    int year; //Anio de la 
-    size_t total; //Cantidad de esa infraccion emitida en ese anio
+    char name[MAX_AMOUNT_OF_CHARACTER+1]; // Infraction name
+    int year; // Year of the infraction
+    size_t total; // Amount of that infraction issued in that year
 
     struct infractionsByYear* next;
 }
@@ -23,23 +34,31 @@ struct cityCDT
     tInfractionsByYear* first;
     tInfractionsByYear* iter;
 
-    char** infractionsName; //Vector con el nombre de las infracciones    
+    char** infractionsName; // Vector with the name of the infractions 
     int topID;
-    //La idea es ir llenando en este vector con el nombre de las infracciones segun su indice. //EJ: la infraccion 48, BIKE LANE se guarda en infractions[47] = BIKE LANE;
+    /*========================*/
+
+    // Query 2 =================
+    tAgencyNode* firstAgency;
+    tAgencyNode* agencyIter;
     /*========================*/
 };
 
-//HEADERS de funciones ocultas
+
+
+// Hidden function headers
 static void dinamic_strcpy(char** dest, const char* src);
 static void freeQuery1(cityADT city);
 static void freeQuery1Rec(tInfractionsByYear* list);
 static void freeInfractions(char** v, int dim);
 static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year);
-
+static void freeAgenciesRec(tAgencyNode* current); 
+static void freePlatesRec(tPlateNode* current); 
 
 void freeCity(cityADT city)
 {
     freeQuery1(city);
+    freeAgenciesRec(city->firstAgency);
     free(city);
 }
 
@@ -70,6 +89,23 @@ static void freeInfractions(char** v, int dim)
     free(v);
 }
 
+static void freePlatesRec(tPlateNode* current) {
+    if (current == NULL) {
+        return;
+    }
+    freePlatesRec(current->next);
+    free(current);
+}
+
+static void freeAgenciesRec(tAgencyNode* current) {
+    if (current == NULL) {
+        return;
+    }
+    freeAgenciesRec(current->next);
+    freePlatesRec(current->plates);
+    free(current);
+}
+
 cityADT newCity(void)
 {
     errno = 0;
@@ -83,6 +119,9 @@ cityADT newCity(void)
     city->iter = NULL;
     city->infractionsName = NULL;
     city->topID = NULL_ID;
+
+    city->firstAgency = NULL;
+    city->agencyIter = NULL;
 
     return city;
 }
@@ -152,6 +191,107 @@ int addInfraction(cityADT city, int id, char* description) {
 }
 
 
+static tAgencyNode* findOrCreateAgencyRec(tAgencyNode* current, tAgencyNode** prev, const char* agencyName) {
+    if (current == NULL || strcmp(current->name, agencyName) > 0) {
+        return NULL;
+    }
+    
+    if (strcmp(current->name, agencyName) == 0) {
+        return current;
+    }
+    
+    *prev = current;
+    return findOrCreateAgencyRec(current->next, prev, agencyName);
+}
+
+static tAgencyNode* createAgency(const char* agencyName) {
+    tAgencyNode* new = calloc(1, sizeof(tAgencyNode));
+    if (new == NULL) {
+        return NULL;
+    }
+    strncpy(new->name, agencyName, AGENCY_NAME);
+    new->name[AGENCY_NAME] = '\0';
+    new->maxTotal = 0;
+    new->topPlate[0] = '\0';
+    new->plates = NULL;
+    new->next = NULL;
+    return new;
+}
+
+static void updateTopPlate(tAgencyNode* agency, const char* plate, size_t amount) {
+    if (amount > agency->maxTotal || 
+        (amount == agency->maxTotal && strcmp(plate, agency->topPlate) < 0)) {
+        agency->maxTotal = amount;
+        strncpy(agency->topPlate, plate, PLATE);
+        agency->topPlate[PLATE] = '\0';
+    }
+}
+
+static tPlateNode* updateAgencyPlateRec(tPlateNode* current, tPlateNode** prev, 
+                                      const char* plate, size_t amount, tAgencyNode* agency) {
+    while (current != NULL && strcmp(current->plate, plate) < 0) {
+        *prev = current;
+        current = current->next;
+    }
+
+    if (current != NULL && strcmp(current->plate, plate) == 0) {
+        current->total += amount;
+        updateTopPlate(agency, plate, current->total);
+        return NULL;
+    }
+
+    tPlateNode* new = malloc(sizeof(tPlateNode));
+    if (new == NULL) {
+        return NULL;
+    }
+    
+    strncpy(new->plate, plate, PLATE);
+    new->plate[PLATE] = '\0';
+    new->total = amount;
+    
+    updateTopPlate(agency, plate, amount);
+    
+    if (*prev == NULL) {
+        new->next = current;
+        return new;  
+    } else {
+        new->next = current;
+        (*prev)->next = new;
+        return NULL;  
+    }
+}
+
+void addTicket(cityADT city, const char* agencyName, const char* plate, size_t amount) {
+    if (city == NULL || agencyName == NULL || plate == NULL) {
+        return;
+    }
+    
+    tAgencyNode* prev = NULL;
+    tAgencyNode* agency = findOrCreateAgencyRec(city->firstAgency, &prev, agencyName);
+    
+    if (agency == NULL && prev == NULL) {
+        // Si es la primera agencia o va al principio
+        city->firstAgency = createAgency(agencyName);
+        agency = city->firstAgency;
+    } else if (agency == NULL) {
+        // Si va en el medio o al final
+        agency = createAgency(agencyName);
+        agency->next = prev->next;
+        prev->next = agency;
+    }
+    
+    if (agency != NULL) {
+        tPlateNode** firstPlate = &(agency->plates);
+        tPlateNode* prevPlate = NULL;
+        tPlateNode* result = updateAgencyPlateRec(*firstPlate, &prevPlate, plate, amount, agency);
+        
+        if (result != NULL) {
+            agency->plates = result;
+        }
+    }
+}
+
+
 void toBegin(cityADT city)
 {
     city->iter = city->first;    
@@ -203,4 +343,33 @@ static void dinamic_strcpy(char** dest, const char* src)
 
     *dest = aux;
     return ;
+}
+
+void toBeginQuery2(cityADT city) {
+    printf("toBeginQuery2 called, firstAgency is %s\n", 
+           city->firstAgency == NULL ? "NULL" : "not NULL");
+    city->agencyIter = city->firstAgency;    
+}
+
+int hasNextQuery2(cityADT city) {
+    printf("hasNextQuery2 called, agencyIter is %s\n", 
+           city->agencyIter == NULL ? "NULL" : "not NULL");
+    return city->agencyIter != NULL;
+}
+
+void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total) {
+    printf("hasNextQuery2: agencyIter is %s\n", city->agencyIter == NULL ? "NULL" : "not NULL");
+    if (!hasNextQuery2(city)) {
+        return;
+    }
+    
+    strncpy(agencyName, city->agencyIter->name, AGENCY_NAME);
+    agencyName[AGENCY_NAME] = '\0';
+    
+    strncpy(topPlate, city->agencyIter->topPlate, PLATE);
+    topPlate[PLATE] = '\0';
+    
+    *total = city->agencyIter->maxTotal;
+    
+    city->agencyIter = city->agencyIter->next;
 }

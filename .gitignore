@@ -7,15 +7,22 @@ dataset
 a.out
 *.o
 *.gch
-test*
+parkingTickets*
+
+# Archivos de depuración
+*.dSYM/
+*.dSYM/**
+*.yml
 
 #ides
 .vscode
 .idea
 .json
 
-#Clang
-.DS_Store
-
 #test
 pytutor.c
+
+# Mac
+.DS_Store
+test.CHI.dSYM
+test.NYC.dSYM

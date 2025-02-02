@@ -21,5 +21,6 @@ enum status {ERROR=0, SUCCESS};
 
 void handleQueryError(cityADT city, int queryNum);
 int makeQuery1(cityADT city);
+int makeQuery2(cityADT city);
 
 #endif

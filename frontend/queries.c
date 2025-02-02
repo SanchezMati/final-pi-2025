@@ -1,4 +1,5 @@
 #include "queries.h"
+#include "cityADT.h"
 
 static FILE* openFile(const char* query, const char* header)
 {
@@ -39,4 +40,31 @@ int makeQuery1(cityADT city)
     }
     fclose(file);
     return SUCCESS;
-}       
+}
+
+int makeQuery2(cityADT city) 
+{
+    printf("\n=== Starting Query 2 ===\n");
+    FILE* file = openFile(QUERY2, "agency;topPlate;topTotal");
+    if(file == FILE_ERROR) {
+        return ERROR;
+    }
+
+    char agencyName[AGENCY_NAME+1];
+    char topPlate[PLATE+1];
+    size_t total;
+
+    toBeginQuery2(city);
+    printf("Starting iteration...\n");
+    
+    while(hasNextQuery2(city)) {
+        nextQuery2(city, agencyName, topPlate, &total);
+        printf("Processing: agency=%s, plate=%s, total=%zu\n", 
+               agencyName, topPlate, total);
+        fprintf(file, "%s;%s;%zu\n", agencyName, topPlate, total);
+    }
+    
+    fclose(file);
+    printf("=== Query 2 Completed ===\n");
+    return SUCCESS;
+}

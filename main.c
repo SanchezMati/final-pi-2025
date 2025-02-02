@@ -65,13 +65,13 @@ int main(int argc, char* argv[])
 
     if (makeQuery1(city) == ERROR) 
     {
-        handleQueryError(city, 1);
+        // handleQueryError(city, 1);
     }
 
-    // if (makeQuery2(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 2);
-    // }
+    if (makeQuery2(city) == ERROR) 
+    {
+        handleQueryError(city, 2);
+    }
 
     // if (makeQuery3(city) == ERROR) 
     // {
