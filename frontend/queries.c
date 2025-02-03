@@ -46,7 +46,7 @@ int makeQuery1(cityADT city)
 int makeQuery2(cityADT city) 
 {
     printf("\n=== Starting Query 2 ===\n");
-    FILE* file = openFile(QUERY2, "agency;topPlate;topTotal");
+    FILE* file = openFile(QUERY2, HEADER2);
     if(file == FILE_ERROR) {
         return ERROR;
     }
@@ -61,7 +61,7 @@ int makeQuery2(cityADT city)
     while(hasNextQuery2(city)) {
         nextQuery2(city, agencyName, topPlate, &total);
         // printf("Processing: agency=%s, plate=%s, total=%zu\n", agencyName, topPlate, total);
-        fprintf(file, "%s;%s;%zu\n", agencyName, topPlate, total);
+        fprintf(file, "%s;%s;%ld\n", agencyName, topPlate, total);
     }
     
     fclose(file);

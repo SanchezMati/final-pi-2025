@@ -10,9 +10,10 @@
 #define DELIMITER ";"
 
 #define QUERY1 "query1.csv"
-#define HEADER1 "Infraction;Year;Amount"
+#define HEADER1 "infraction;year;tickets"
 
 #define QUERY2 "query2.csv"
+#define HEADER2 "agency;topPlate;topTotal"
 
 #define QUERY3 "query3.csv"
 

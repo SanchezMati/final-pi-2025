@@ -186,7 +186,7 @@ void processTicket(cityADT city, char plate[], int year, int day, int month, int
     
     
     addTicketToMakeQuery1(city, id, year);
-    //TODO: Cambiar nombre a addTicketToMakeQuery2
-    addTicket(city, agencyName, plate, fineAmount);
+    
+    addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
    // printf("Ticket processed successfully\n");
 }

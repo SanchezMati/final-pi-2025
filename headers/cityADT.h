@@ -10,6 +10,8 @@
 #define AGENCY_NAME 35
 #define PLATE 10
 #define NULL_ID -1
+#define BLOCK 25
+#define ALPHABET 'z' - 'a' + 1
 
 enum status {ERROR = 0, SUCCESS};
 
@@ -27,7 +29,7 @@ int addInfraction(cityADT city, int id, char* description);
 //Agruega un ticket 
 void addTicketToMakeQuery1(cityADT city, int id, int year);
 
-void addTicket(cityADT city, const char* agencyName, const char* plate, size_t amount);
+void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* plate, int amount);
 
 //Funciones de iteracion para la query1
 

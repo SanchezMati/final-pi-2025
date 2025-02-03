@@ -1,9 +1,5 @@
 #include "cityADT.h"
 
-#define MAX_AMOUNT_OF_CHARACTER 50
-#define NULL_ID -1
-#define BLOCK 25
-
 typedef struct plateNode {
     char plate[PLATE+1];        // Plate
     size_t total;               // Total sum of fine amounts for this plate
@@ -14,7 +10,9 @@ typedef struct agencyNode {
     char name[AGENCY_NAME+1];   // Agency name
     char topPlate[PLATE+1];     // Plate with highest grossing for this agency
     size_t maxTotal;            // Total amount of topPlate fines
+    
     tPlateNode* plates;         // List of plates and their total amounts
+    
     struct agencyNode* next;   
 } tAgencyNode;
 
@@ -33,14 +31,17 @@ struct cityCDT
     //Query1 =================
     tInfractionsByYear* first;
     tInfractionsByYear* iter;
-
     char** infractionsName; // Vector with the name of the infractions 
     int topID;
     /*========================*/
 
-    // Query 2 =================
+    //Query2 =================
     tAgencyNode* firstAgency;
     tAgencyNode* agencyIter;
+    /*========================*/
+
+    //Query3 =================
+
     /*========================*/
 };
 
@@ -218,7 +219,7 @@ static tAgencyNode* createAgency(const char* agencyName) {
     return new;
 }
 
-static void updateTopPlate(tAgencyNode* agency, const char* plate, size_t amount) {
+static void updateTopPlate(tAgencyNode* agency, const char* plate, int amount) {
     if (amount > agency->maxTotal || 
         (amount == agency->maxTotal && strcmp(plate, agency->topPlate) < 0)) {
         agency->maxTotal = amount;
@@ -261,9 +262,10 @@ static tPlateNode* updateAgencyPlateRec(tPlateNode* current, tPlateNode** prev,
     }
 }
 
-void addTicket(cityADT city, const char* agencyName, const char* plate, size_t amount) {
+void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* plate, int amount) 
+{
     if (city == NULL || agencyName == NULL || plate == NULL) {
-        return;
+        return ;
     }
     
     tAgencyNode* prev = NULL;
@@ -346,21 +348,19 @@ static void dinamic_strcpy(char** dest, const char* src)
 }
 
 void toBeginQuery2(cityADT city) {
-    printf("toBeginQuery2 called, firstAgency is %s\n", 
-           city->firstAgency == NULL ? "NULL" : "not NULL");
+    // printf("toBeginQuery2 called, firstAgency is %s\n", city->firstAgency == NULL ? "NULL" : "not NULL");
     city->agencyIter = city->firstAgency;    
 }
 
 int hasNextQuery2(cityADT city) {
-    printf("hasNextQuery2 called, agencyIter is %s\n", 
-           city->agencyIter == NULL ? "NULL" : "not NULL");
+    // printf("hasNextQuery2 called, agencyIter is %s\n", city->agencyIter == NULL ? "NULL" : "not NULL");
     return city->agencyIter != NULL;
 }
 
 void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total) {
-    printf("hasNextQuery2: agencyIter is %s\n", city->agencyIter == NULL ? "NULL" : "not NULL");
+    // printf("hasNextQuery2: agencyIter is %s\n", city->agencyIter == NULL ? "NULL" : "not NULL");
     if (!hasNextQuery2(city)) {
-        return;
+        return ;
     }
     
     strncpy(agencyName, city->agencyIter->name, AGENCY_NAME);
