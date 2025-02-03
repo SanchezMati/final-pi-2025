@@ -99,6 +99,8 @@ cityADT newCity(void)
     city->iter = NULL;
     city->infractionsName = NULL;
     city->topID = NULL_ID;
+    city->firstAgency = NULL;
+    city->agencyIter = NULL;
 
     return city;
 }
@@ -237,7 +239,8 @@ static tAgency* addAgency(tAgency* list ,char* agency, char* plate, int fine)
         {
             return list;
         }
-        strcpy(aux->name, agency);
+        strncpy(aux->name, agency, AGENCY_LENTH);
+        aux->name[AGENCY_LENTH] = '\0'; 
 
         aux->first = malloc(sizeof(tPlate));
         if(aux->first == NULL || errno == ENOMEM)
