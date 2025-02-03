@@ -40,3 +40,25 @@ int makeQuery1(cityADT city)
     fclose(file);
     return SUCCESS;
 }       
+
+int makeQuery2(cityADT city) 
+{
+    FILE* file = openFile(QUERY2, HEADER2);
+    if(file == FILE_ERROR) {
+        return ERROR;
+    }
+
+    char agencyName[AGENCY_LENTH+1];
+    char topPlate[PLATE_LENTH+1];
+    int total;
+    
+    toBeginQuery2(city);    
+    while(hasNextQuery2(city)) 
+    {
+        nextQuery2(city, agencyName, topPlate, &total);
+        fprintf(file, "%s;%s;%d\n", agencyName, topPlate, total);
+    }
+    
+    fclose(file);
+    return SUCCESS;
+}

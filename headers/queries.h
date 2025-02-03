@@ -11,9 +11,10 @@ enum status {ERROR=0, SUCCESS};
 #define DELIMITER ";"
 
 #define QUERY1 "query1.csv"
-#define HEADER1 "Infraction;Year;Amount"
+#define HEADER1 "infraction;year;tickets"
 
 #define QUERY2 "query2.csv"
+#define HEADER2 "agency;topPlate;topTotal"
 
 #define QUERY3 "query3.csv"
 
@@ -21,5 +22,6 @@ enum status {ERROR=0, SUCCESS};
 
 void handleQueryError(cityADT city, int queryNum);
 int makeQuery1(cityADT city);
+int makeQuery2(cityADT city);
 
 #endif

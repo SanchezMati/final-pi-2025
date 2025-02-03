@@ -1,11 +1,22 @@
 #include "cityADT.h"
 
-#define MAX_AMOUNT_OF_CHARACTER 50
-#define NULL_ID -1
-#define BLOCK 25
-
-
 enum status {ERROR = 0, SUCCESS};
+
+typedef struct plates
+{
+    char plate[PLATE_LENTH+1];
+    int amount;
+    struct plates* next;
+}
+tPlate;
+
+typedef struct agency
+{
+    char name[AGENCY_LENTH+1];
+    tPlate* first;
+    struct agency* next;
+}
+tAgency;
 
 typedef struct infractionsByYear
 {
@@ -25,17 +36,22 @@ struct cityCDT
 
     char** infractionsName; //Vector con el nombre de las infracciones    
     int topID;
-    //La idea es ir llenando en este vector con el nombre de las infracciones segun su indice. //EJ: la infraccion 48, BIKE LANE se guarda en infractions[47] = BIKE LANE;
     /*========================*/
+
+    //Query2
+    tAgency* firstAgency;
+    tAgency* agencyIter;
+
 };
 
-//HEADERS de funciones ocultas
+//listERS de funciones ocultas
 static void dinamic_strcpy(char** dest, const char* src);
 static void freeQuery1(cityADT city);
 static void freeQuery1Rec(tInfractionsByYear* list);
 static void freeInfractions(char** v, int dim);
 static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year);
-
+static tPlate* addPlate(tPlate* list, char* plate, int fine);
+static tAgency* addAgency(tAgency* list ,char* agency, char* plate, int fine);
 
 void freeCity(cityADT city)
 {
@@ -203,4 +219,124 @@ static void dinamic_strcpy(char** dest, const char* src)
 
     *dest = aux;
     return ;
+}
+
+void addTicketToMakeQuery2(cityADT city, char* agency, char* plate, int fine)
+{
+    city->firstAgency = addAgency(city->firstAgency, agency, plate, fine);
+}
+
+static tAgency* addAgency(tAgency* list ,char* agency, char* plate, int fine)
+{
+    int c;
+    if(list == NULL || (c = strcmp(list->name, agency)) > 0) //La agencia no existe
+    {
+        errno = 0;
+        tAgency* aux = malloc(sizeof(tAgency));
+        if(aux == NULL || errno == ENOMEM)
+        {
+            return list;
+        }
+        strcpy(aux->name, agency);
+
+        aux->first = malloc(sizeof(tPlate));
+        if(aux->first == NULL || errno == ENOMEM)
+        {
+            free(aux);
+            return list;
+        }
+        strcpy(aux->first->plate, plate);
+        aux->first->amount = fine;
+        aux->first->next = NULL;
+
+        aux->next = list;
+        return aux;        
+    }
+    else if(c == 0) //La agencia ya esta creada. Agruego la patente
+    {   
+        list->first = addPlate(list->first, plate, fine);
+        return list;
+    }
+
+    list->next = addAgency(list->next, agency, plate, fine);
+    return list;
+}
+
+static tPlate* addPlate(tPlate* list, char* plate, int fine)
+{
+    tPlate* aux;
+    tPlate* current = list;
+    tPlate* prev = NULL;
+    
+    while (current != NULL) //Buscar si la patente ya existe
+    {
+        if (strcmp(current->plate, plate) == 0) //Caso 1: La patente existe.
+        {
+            current->amount += fine;
+            if (prev && current->amount > prev->amount) 
+            {
+                prev->next = current->next;
+                return addPlate(list, plate, current->amount);
+            }
+            return list;
+        }
+        prev = current;
+        current = current->next;
+    }
+    
+    aux = (tPlate*)malloc(sizeof(tPlate));
+    if(aux == NULL || errno == ENOMEM)
+    {
+        return list;
+    }
+
+    strcpy(aux->plate, plate);
+    aux->amount = fine;
+    aux->next = NULL;
+    
+    if (!list || list->amount < fine || (list->amount == fine && strcmp(list->plate, plate) > 0)) 
+    {
+        aux->next = list;
+        return aux;
+    }
+    
+    current = list;
+    while (current->next && (current->next->amount > fine || 
+          (current->next->amount == fine && strcmp(current->next->plate, plate) < 0))) {
+        current = current->next;
+    }
+    
+    aux->next = current->next;
+    current->next = aux;
+    
+    return list;
+}
+
+void toBeginQuery2(cityADT city)
+{
+    city->agencyIter = city->firstAgency;    
+}
+
+int hasNextQuery2(cityADT city)
+{    
+    return city->agencyIter != NULL;
+}
+
+void nextQuery2(cityADT city, char* agencyName, char* topPlate, int* total)
+ {
+    
+    if (!hasNextQuery2(city)) 
+    {
+        return ;
+    }
+    
+    strncpy(agencyName, city->agencyIter->name, AGENCY_LENTH);
+    agencyName[AGENCY_LENTH] = '\0';
+    
+    strncpy(topPlate, city->agencyIter->first->plate, PLATE_LENTH);
+    topPlate[PLATE_LENTH] = '\0';
+    
+    *total = city->agencyIter->first->amount;
+    
+    city->agencyIter = city->agencyIter->next;
 }

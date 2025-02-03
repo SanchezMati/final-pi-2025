@@ -6,10 +6,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_AMOUNT_OF_CHARACTER 50
+#define NULL_ID -1
+#define BLOCK 25
+#define AGENCY_LENTH 50
+#define PLATE_LENTH 10
+
 typedef struct cityCDT* cityADT;
 
 //Crea un nuevo TAD
 cityADT newCity(void);
+
+//Query1
 
 //Libeara la memoria reservada por el TAD
 void freeCity(cityADT city);
@@ -34,5 +42,15 @@ int hasNext(cityADT city);
 //@tickets: devuelve la cantiadad de infracciones 
 //devuelve una copia del nombre de la infraccion 
 char* next(cityADT city, int* year, int* tickets);
+
+//Query2
+void addTicketToMakeQuery2(cityADT city, char* agency, char* plate, int fine);
+
+void toBeginQuery2(cityADT city);
+
+int hasNextQuery2(cityADT city);
+
+void nextQuery2(cityADT city, char* agencyName, char* topPlate, int* total);
+
 
 #endif

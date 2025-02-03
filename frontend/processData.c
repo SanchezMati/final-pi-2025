@@ -153,4 +153,6 @@ void processTicket(cityADT city, char plate[], int year, int day, int month, int
     }
     
     addTicketToMakeQuery1(city, id, year);
+
+    addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
 }

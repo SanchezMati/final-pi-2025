@@ -3,8 +3,8 @@ CC = gcc
 FLAGS = -Wall -pedantic -std=c99 
 SANITIZE = -fsanitize=address -g
 INCLUDES = -I headers
-OUTPUT_FILE_NYC = test.NYC
-OUTPUT_FILE_CHI = test.CHI
+OUTPUT_FILE_NYC = testNYC
+OUTPUT_FILE_CHI = testCHI
 SOURCE_FILE = main.c
 BACKEND = backend/cityADT.c
 FRONTEND = frontend/dataValidation.c frontend/processData.c frontend/queries.c
@@ -17,6 +17,8 @@ testNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 testCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE_CHI)
 
+noSanitizeNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
+	$(CC) $(FLAGS) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE_NYC)
 
 # Limpieza de archivos generados
 clean:

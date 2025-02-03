@@ -1,5 +1,6 @@
 //TODO: Agruegar los path en la compilacion con el flag -I
 #include "main.h" 
+#include <time.h>
 
 enum fileType {INVALID = 0, NYC, CHI};
 
@@ -10,6 +11,13 @@ e incluirlo en los tres archivos*/
 
 int main(int argc, char* argv[])
 {
+
+    clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();  // Inicia la medición
+
+
     if(argc != AMOUNT_OF_ARGUMENTS+1)
     {
         fprintf(stderr, "Error: Expected %d .csv files, but %d arguments were provided.\n", AMOUNT_OF_ARGUMENTS, argc-1);
@@ -68,10 +76,10 @@ int main(int argc, char* argv[])
         handleQueryError(city, 1);
     }
 
-    // if (makeQuery2(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 2);
-    // }
+    if (makeQuery2(city) == ERROR) 
+    {
+        handleQueryError(city, 2);
+    }
 
     // if (makeQuery3(city) == ERROR) 
     // {
@@ -85,6 +93,11 @@ int main(int argc, char* argv[])
 
     freeCity(city);
 
+    end = clock();  // Finaliza la medición
+    // Calcula el tiempo en segundos
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("Tiempo de ejecución: %f segundos\n", cpu_time_used);
     puts("OK!");
     return 0;
 }
