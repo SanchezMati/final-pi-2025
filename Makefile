@@ -10,6 +10,8 @@ BACKEND = backend/src/cityADT.c
 FRONTEND = frontend/src/dataValidation.c frontend/src/processData.c frontend/src/queries.c
 QUERY1 = "query1.csv"
 QUERY2 = "query2.csv"
+QUERY3 = "query3.csv"
+QUERIES = $(QUERY1) $(QUERY2) $(QUERY3)
 
 
 # Regla principal para compilar y ejecutar
@@ -22,7 +24,7 @@ testCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
 
 # Limpieza de archivos generados
 clean:
-	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERY1) $(QUERY2) parkingTicketsNYC parkingTicketsCHI
+	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERIES) parkingTicketsNYC parkingTicketsCHI
 
 
 all: parkingTicketsNYC parkingTicketsCHI
