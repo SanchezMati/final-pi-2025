@@ -56,15 +56,46 @@ int makeQuery2(cityADT city)
     size_t total;
 
     toBeginQuery2(city);
-    printf("Starting iteration...\n");
     
     while(hasNextQuery2(city)) {
         nextQuery2(city, agencyName, topPlate, &total);
-        // printf("Processing: agency=%s, plate=%s, total=%zu\n", agencyName, topPlate, total);
-        fprintf(file, "%s;%s;%ld\n", agencyName, topPlate, total);
+        fprintf(file, "%s%s%s%s%ld\n", agencyName, DELIMITER, topPlate, DELIMITER, total);
     }
     
     fclose(file);
     printf("=== Query 2 Completed ===\n");
     return SUCCESS;
+}
+
+int makeQuery3(cityADT city)
+{
+    printf("\n=== Starting Query 3 ===\n");
+
+    FILE* file = openFile(QUERY3, HEADER3);
+    if(file == FILE_ERROR) 
+    {
+        return ERROR;
+    }
+
+    char* infraction;
+    char* month;
+    for(int i = 0; i < 12; i++)
+    {
+        infraction = getTopInfraction(city, i);
+        month = intToMonth(i);
+        fprintf(file, "%s%s%s\n", month, DELIMITER, infraction);
+        free(infraction);
+    }
+    printf("=== Query 3 Completed ===\n");
+    return SUCCESS;
+}
+
+char* intToMonth(int number)
+{
+    char* months[] = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+
+    return months[number];
 }

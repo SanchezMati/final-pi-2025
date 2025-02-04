@@ -16,11 +16,15 @@
 #define HEADER2 "agency;topPlate;topTotal"
 
 #define QUERY3 "query3.csv"
+#define HEADER3 "month;topInfraction"
 
 #define QUERY4 "query4.csv"
 
 void handleQueryError(cityADT city, int queryNum);
 int makeQuery1(cityADT city);
 int makeQuery2(cityADT city);
+int makeQuery3(cityADT city);
+
+char* intToMonth(int number);
 
 #endif

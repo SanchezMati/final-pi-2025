@@ -41,7 +41,9 @@ struct cityCDT
     /*========================*/
 
     //Query3 =================
-
+    size_t* infractionsByMonth[MONTHS]; //Vector donde v[0][0] == cantidad de infracciones de id 1 en enero 
+    bool status; //true si hay que reservar memoria para el vector, false si no
+    //No me gusta mucho el status, pero fue la unica que se me ocurrio
     /*========================*/
 };
 
@@ -123,6 +125,8 @@ cityADT newCity(void)
 
     city->firstAgency = NULL;
     city->agencyIter = NULL;
+
+    city->status = false;
 
     return city;
 }
@@ -348,17 +352,14 @@ static void dinamic_strcpy(char** dest, const char* src)
 }
 
 void toBeginQuery2(cityADT city) {
-    // printf("toBeginQuery2 called, firstAgency is %s\n", city->firstAgency == NULL ? "NULL" : "not NULL");
     city->agencyIter = city->firstAgency;    
 }
 
 int hasNextQuery2(cityADT city) {
-    // printf("hasNextQuery2 called, agencyIter is %s\n", city->agencyIter == NULL ? "NULL" : "not NULL");
     return city->agencyIter != NULL;
 }
 
 void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total) {
-    // printf("hasNextQuery2: agencyIter is %s\n", city->agencyIter == NULL ? "NULL" : "not NULL");
     if (!hasNextQuery2(city)) {
         return ;
     }
@@ -372,4 +373,74 @@ void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total) {
     *total = city->agencyIter->maxTotal;
     
     city->agencyIter = city->agencyIter->next;
+}
+
+void addTicketToMakeQuery3(cityADT city, int month, int id)
+{
+    if(city->status == false)
+    {
+        for(int i = 0; i < MONTHS; i++)
+        {
+            city->infractionsByMonth[i] = calloc(city->topID, sizeof(int));
+        }
+        city->status = true;
+    }
+    
+    (city->infractionsByMonth[month][id-1])++;
+    
+}
+
+char* getTopInfraction(cityADT city, int month)
+{
+    int dim = city->topID;
+    int* topID = NULL; //Vector con el id de las infracciones mas populares en ese mes
+    int topID_dim = 0;
+
+    int* aux = NULL;
+    int aux_dim;
+    
+    size_t current, max = 0;
+
+    for(int i = 0; i < dim; i++)
+    { 
+        current = city->infractionsByMonth[month][i];
+        if(current >= max)
+        {
+            aux_dim = (current > max) ? 1:topID_dim+1;
+            aux = realloc(topID, aux_dim*sizeof(int));
+            if(aux == NULL)
+            {
+                continue;
+            }
+            topID = aux;
+            topID_dim = aux_dim;
+            topID[topID_dim-1] = i; 
+            max = current;
+        }
+    }
+
+    int id = topID[0];
+
+    char name[MAX_AMOUNT_OF_CHARACTER+1];
+    char current_name[MAX_AMOUNT_OF_CHARACTER+1];
+
+    strncpy(name, city->infractionsName[id], MAX_AMOUNT_OF_CHARACTER);
+    name[MAX_AMOUNT_OF_CHARACTER] = '\0';
+
+    
+    for(int i = 1; i < topID_dim; i++)
+    {
+        id = topID[i];
+        strncpy(name, city->infractionsName[id], MAX_AMOUNT_OF_CHARACTER);
+        name[MAX_AMOUNT_OF_CHARACTER] = '\0';
+        if(strcmp(current_name, name) < 0)
+        {
+            strncpy(name, current_name, MAX_AMOUNT_OF_CHARACTER);
+            name[MAX_AMOUNT_OF_CHARACTER] = '\0';
+        }
+    }
+
+    char* ans;
+    dinamic_strcpy(&ans, name);
+    return ans; 
 }

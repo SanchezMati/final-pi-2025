@@ -1,0 +1,1 @@
+-Modificar la funcion freeCity para que la query2 no tenga memoryleak

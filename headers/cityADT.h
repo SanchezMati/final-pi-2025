@@ -5,7 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
+
+#define MONTHS 12
 #define MAX_AMOUNT_OF_CHARACTER 50
 #define AGENCY_NAME 35
 #define PLATE 10
@@ -31,6 +34,8 @@ void addTicketToMakeQuery1(cityADT city, int id, int year);
 
 void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* plate, int amount);
 
+void addTicketToMakeQuery3(cityADT city, int month, int id);
+
 //Funciones de iteracion para la query1
 
 //Setea el iterador al inicio de la lista
@@ -49,5 +54,7 @@ char* next(cityADT city, int* year, int* tickets);
 void toBeginQuery2(cityADT city);
 int hasNextQuery2(cityADT city);
 void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total);
+
+char* getTopInfraction(cityADT city, int month);
 
 #endif

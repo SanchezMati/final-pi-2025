@@ -187,6 +187,7 @@ void processTicket(cityADT city, char plate[], int year, int day, int month, int
     
     addTicketToMakeQuery1(city, id, year);
     
-    addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
-   // printf("Ticket processed successfully\n");
+    // addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
+    
+    addTicketToMakeQuery3(city, month, id);
 }
