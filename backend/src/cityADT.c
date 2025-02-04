@@ -42,8 +42,6 @@ struct cityCDT
 
     //Query3 =================
     size_t* infractionsByMonth[MONTHS]; //Vector donde v[0][0] == cantidad de infracciones de id 1 en enero 
-    bool status; //true si hay que reservar memoria para el vector, false si no
-    //No me gusta mucho el status, pero fue la unica que se me ocurrio
     /*========================*/
 };
 
