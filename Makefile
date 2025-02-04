@@ -2,12 +2,12 @@
 CC = gcc
 FLAGS = -Wall -pedantic -std=c99 
 SANITIZE = -fsanitize=address -g
-INCLUDES = -I headers
+INCLUDES = -I ./frontend/inc -I ./backend/inc
 OUTPUT_FILE_NYC = testNYC
 OUTPUT_FILE_CHI = testCHI
 SOURCE_FILE = main.c
-BACKEND = backend/cityADT.c
-FRONTEND = frontend/dataValidation.c frontend/processData.c frontend/queries.c
+BACKEND = backend/src/cityADT.c
+FRONTEND = frontend/src/dataValidation.c frontend/src/processData.c frontend/src/queries.c
 QUERY1 = "query1.csv"
 QUERY2 = "query2.csv"
 

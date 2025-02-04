@@ -9,6 +9,8 @@
 #include "processData.h"
 #include "queries.h" 
 
+enum fileType {INVALID = 0, NYC, CHI};
+
 #define AMOUNT_OF_ARGUMENTS 2
 
 #define TICKETS 1

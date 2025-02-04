@@ -1,1 +1,8 @@
 -Modificar la funcion freeCity para que la query2 no tenga memoryleak
+-Corregir los comentarios
+-Mejorar el makefile
+-Corregir error de memoryleak query2 y 3
+-Corregir error al leer infractions (Falta el ultimo caracter en todas)
+
+//Si hay tiempo
+-Optimizar la query2

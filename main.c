@@ -2,8 +2,6 @@
 #include "main.h"
 #include <time.h> 
 
-enum fileType {INVALID = 0, NYC, CHI};
-
 /*Este mismo enum se repite en los archivos de proccesData.c y dataValidation.c.
 no se si es de buen estilo o si seria mejor ponerlo todo en un solo archivo .h 
 e incluirlo en los tres archivos*/
@@ -65,6 +63,11 @@ int main(int argc, char* argv[])
     }
 
     infractionsReader(infractions, city);
+    if (! initInfractionsByMonth(city))
+    {
+        fprintf(stderr, "Error: No Memory");
+        exit(EXIT_FAILURE);
+    }
     ticketsReader(tickets, city, fileType);
 
     fclose(tickets) ;

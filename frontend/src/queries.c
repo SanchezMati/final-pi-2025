@@ -79,7 +79,7 @@ int makeQuery3(cityADT city)
 
     char* infraction;
     char* month;
-    for(int i = 0; i < 12; i++)
+    for(int i = 0; i < MONTHS; i++)
     {
         infraction = getTopInfraction(city, i);
         month = intToMonth(i);
@@ -87,6 +87,7 @@ int makeQuery3(cityADT city)
         free(infraction);
     }
     printf("=== Query 3 Completed ===\n");
+    fclose(file);
     return SUCCESS;
 }
 

@@ -50,7 +50,7 @@ struct cityCDT
 
 
 // Hidden function headers
-static void dinamic_strcpy(char** dest, const char* src);
+static void dynamic_strcpy(char** dest, const char* src);
 static void freeQuery1(cityADT city);
 static void freeQuery1Rec(tInfractionsByYear* list);
 static void freeInfractions(char** v, int dim);
@@ -126,9 +126,16 @@ cityADT newCity(void)
     city->firstAgency = NULL;
     city->agencyIter = NULL;
 
-    city->status = false;
-
     return city;
+}
+
+bool initInfractionsByMonth(cityADT city){
+    for (int i = 0; i < MONTHS; i++){
+        if ((city->infractionsByMonth[i] = calloc(city->topID, sizeof(size_t))) == NULL){
+            return false;
+        }
+    }
+    return true;
 }
 
 void addTicketToMakeQuery1(cityADT city, int id, int year) //Esta funcion le podriamos agruegar mas cosas, ahora solo la hago para la query1, pero se podria adaptar
@@ -179,7 +186,7 @@ int addInfraction(cityADT city, int id, char* description) {
         }
         
         // Initialize new pointers to NULL
-        for(int i = city->topID + 1; i < id; i++) {
+        for(int i = city->topID; i < id; i++) {
             aux[i] = NULL;
         }
         
@@ -187,9 +194,11 @@ int addInfraction(cityADT city, int id, char* description) {
         city->topID = id;
     }
 
-    dinamic_strcpy(&(city->infractionsName[id-1]), description);
-    if(city->infractionsName[id-1] == NULL || errno == ENOMEM) {
-        return ERROR;
+    if (city->infractionsName[id - 1] == NULL){
+        dynamic_strcpy(&(city->infractionsName[id-1]), description);
+        if(city->infractionsName[id-1] == NULL || errno == ENOMEM) {
+            return ERROR;
+        }
     }
     
     return SUCCESS;
@@ -317,7 +326,7 @@ char* next(cityADT city, int* year, int* tickets) {
     *tickets = city->iter->total;
     
     char* name;
-    dinamic_strcpy(&name, city->iter->name);
+    dynamic_strcpy(&name, city->iter->name);
     if(name == NULL || errno == ENOMEM) 
     {
         return NULL;  
@@ -326,7 +335,7 @@ char* next(cityADT city, int* year, int* tickets) {
     return name;
 }
 
-static void dinamic_strcpy(char** dest, const char* src)
+static void dynamic_strcpy(char** dest, const char* src)
 {   
     errno = 0;
     int i;
@@ -337,7 +346,10 @@ static void dinamic_strcpy(char** dest, const char* src)
         {
             aux = realloc(aux, i+BLOCK);
             if(aux == NULL || errno == ENOMEM)
-            {
+            {   
+                if (*dest != NULL){
+                    free(*dest);
+                }
                 *dest = NULL;
             }
         }
@@ -377,17 +389,7 @@ void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total) {
 
 void addTicketToMakeQuery3(cityADT city, int month, int id)
 {
-    if(city->status == false)
-    {
-        for(int i = 0; i < MONTHS; i++)
-        {
-            city->infractionsByMonth[i] = calloc(city->topID, sizeof(int));
-        }
-        city->status = true;
-    }
-    
-    (city->infractionsByMonth[month][id-1])++;
-    
+    (city->infractionsByMonth[month - 1][id-1])++;
 }
 
 char* getTopInfraction(cityADT city, int month)
@@ -395,19 +397,16 @@ char* getTopInfraction(cityADT city, int month)
     int dim = city->topID;
     int* topID = NULL; //Vector con el id de las infracciones mas populares en ese mes
     int topID_dim = 0;
-
-    int* aux = NULL;
-    int aux_dim;
     
     size_t current, max = 0;
-
+    
     for(int i = 0; i < dim; i++)
     { 
         current = city->infractionsByMonth[month][i];
         if(current >= max)
         {
-            aux_dim = (current > max) ? 1:topID_dim+1;
-            aux = realloc(topID, aux_dim*sizeof(int));
+            int aux_dim = (current > max) ? 1:topID_dim+1;
+            int * aux = realloc(topID, aux_dim*sizeof(int));
             if(aux == NULL)
             {
                 continue;
@@ -421,26 +420,19 @@ char* getTopInfraction(cityADT city, int month)
 
     int id = topID[0];
 
-    char name[MAX_AMOUNT_OF_CHARACTER+1];
-    char current_name[MAX_AMOUNT_OF_CHARACTER+1];
+    char * currentTopInfractionName = city->infractionsName[id];
 
-    strncpy(name, city->infractionsName[id], MAX_AMOUNT_OF_CHARACTER);
-    name[MAX_AMOUNT_OF_CHARACTER] = '\0';
-
-    
     for(int i = 1; i < topID_dim; i++)
     {
         id = topID[i];
-        strncpy(name, city->infractionsName[id], MAX_AMOUNT_OF_CHARACTER);
-        name[MAX_AMOUNT_OF_CHARACTER] = '\0';
-        if(strcmp(current_name, name) < 0)
+        if(strcmp(city->infractionsName[id], currentTopInfractionName) < 0)
         {
-            strncpy(name, current_name, MAX_AMOUNT_OF_CHARACTER);
-            name[MAX_AMOUNT_OF_CHARACTER] = '\0';
+            currentTopInfractionName = city->infractionsName[id];
         }
     }
 
+    // Create a clone of the current top infraction name for data protection
     char* ans;
-    dinamic_strcpy(&ans, name);
-    return ans; 
+    dynamic_strcpy(&ans, currentTopInfractionName);
+    return ans;
 }

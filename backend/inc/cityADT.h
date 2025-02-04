@@ -12,7 +12,7 @@
 #define MAX_AMOUNT_OF_CHARACTER 50
 #define AGENCY_NAME 35
 #define PLATE 10
-#define NULL_ID -1
+#define NULL_ID 0
 #define BLOCK 25
 #define ALPHABET 'z' - 'a' + 1
 
@@ -22,6 +22,9 @@ typedef struct cityCDT* cityADT;
 
 //Crea un nuevo TAD
 cityADT newCity(void);
+
+// Con el topID ya cargado, crea la matriz de infracciones por mes para la Query 3
+bool initInfractionsByMonth(cityADT city);
 
 //Libeara la memoria reservada por el TAD
 void freeCity(cityADT city);
