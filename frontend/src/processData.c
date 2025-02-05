@@ -42,7 +42,7 @@ void ticketsReader(FILE * file, cityADT city, int fileType)
     printf("Starting ticketsReader with fileType=%d\n", fileType);
     
     fgets(line, sizeof(line), file);
-    printf("Header read: %s", line);
+    printf("Header read: %s\n", line);
     
     if (fileType == NYC) 
     {
@@ -57,6 +57,7 @@ void ticketsReader(FILE * file, cityADT city, int fileType)
     }
     else
     {
+        printf("Processing CHI file\n");
         while (fgets(line, sizeof(line), file)) 
         {
             if (line[0] != '\0') {
@@ -206,7 +207,7 @@ void processTicket(cityADT city, char plate[], int year, int day, int month, int
     
     addTicketToMakeQuery1(city, id, year);
     
-    // addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
+    addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
     
     addTicketToMakeQuery3(city, month, id);
 }

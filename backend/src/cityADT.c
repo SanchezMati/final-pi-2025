@@ -283,31 +283,41 @@ static tPlateNode* updateAgencyPlateRec(tPlateNode* current, tPlateNode** prev,
 
 void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* plate, int amount) 
 {
-    if (city == NULL || agencyName == NULL || plate == NULL) {
-        return ;
+    if (city == NULL || agencyName == NULL || plate == NULL || amount < 0) {
+        return;
     }
     
+    tAgencyNode* current = city->firstAgency;
     tAgencyNode* prev = NULL;
-    tAgencyNode* agency = findOrCreateAgencyRec(city->firstAgency, &prev, agencyName);
     
-    if (agency == NULL && prev == NULL) {
-        // Si es la primera agencia o va al principio
-        city->firstAgency = createAgency(agencyName);
-        agency = city->firstAgency;
-    } else if (agency == NULL) {
-        // Si va en el medio o al final
-        agency = createAgency(agencyName);
-        agency->next = prev->next;
-        prev->next = agency;
+    while(current != NULL && strcmp(current->name, agencyName) < 0) {
+        prev = current;
+        current = current->next;
     }
     
-    if (agency != NULL) {
-        tPlateNode** firstPlate = &(agency->plates);
-        tPlateNode* prevPlate = NULL;
-        tPlateNode* result = updateAgencyPlateRec(*firstPlate, &prevPlate, plate, amount, agency);
+    if(current == NULL || strcmp(current->name, agencyName) != 0) {
+        tAgencyNode* new = calloc(1, sizeof(tAgencyNode));
+        if(new == NULL) {
+            return;
+        }
         
-        if (result != NULL) {
-            agency->plates = result;
+        strncpy(new->name, agencyName, AGENCY_NAME);
+        new->maxTotal = amount;
+        strncpy(new->topPlate, plate, PLATE);
+        
+        if(prev == NULL) {
+            new->next = city->firstAgency;
+            city->firstAgency = new;
+        } else {
+            new->next = current;
+            prev->next = new;
+        }
+        current = new;
+    } else {
+        if(amount > current->maxTotal || 
+           (amount == current->maxTotal && strcmp(plate, current->topPlate) < 0)) {
+            current->maxTotal = amount;
+            strncpy(current->topPlate, plate, PLATE);
         }
     }
 }
@@ -370,7 +380,7 @@ static void dynamic_strcpy(char** dest, const char* src)
 }
 
 void toBeginQuery2(cityADT city) {
-    city->agencyIter = city->firstAgency;    
+    city->agencyIter = city->firstAgency;
 }
 
 int hasNextQuery2(cityADT city) {

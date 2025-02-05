@@ -6,6 +6,8 @@
 #include <stdlib.h>
 
 #define FILE_ERROR NULL
+#define ERROR 0
+#define SUCCESS 1
 
 #define DELIMITER ";"
 
