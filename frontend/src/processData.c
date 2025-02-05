@@ -3,7 +3,7 @@
 #define LENGTH_OF_AGENCY_NAME (35 + 1) //35 chars + '\0'
 #define LENGTH_OF_PLATES (10 + 1)  //plates lenght
  
-#define SIZE_LINE_INFRACTIONS 32
+#define SIZE_LINE_INFRACTIONS 55
 #define SIZE_LINE_TICKETS 65
 
 enum fileType {INVALID = 0, NYC, CHI};
