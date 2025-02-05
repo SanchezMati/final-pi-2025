@@ -45,8 +45,6 @@ struct cityCDT
     /*========================*/
 };
 
-
-
 // Hidden function headers
 static void dynamic_strcpy(char** dest, const char* src);
 static void freeQuery1(cityADT city);
@@ -55,12 +53,22 @@ static void freeInfractions(char** v, int dim);
 static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year);
 static void freeAgenciesRec(tAgencyNode* current); 
 static void freePlatesRec(tPlateNode* current); 
+static void freeQuery3(cityADT city);
 
 void freeCity(cityADT city)
 {
     freeQuery1(city);
+    freeQuery3(city);
     freeAgenciesRec(city->firstAgency);
     free(city);
+}
+
+static void freeQuery3(cityADT city)
+{
+    for(int i = 0; i < MONTHS; i++)
+    {
+        free(city->infractionsByMonth[i]);
+    }
 }
 
 static void freeQuery1(cityADT city)
@@ -387,7 +395,7 @@ void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total) {
 
 void addTicketToMakeQuery3(cityADT city, int month, int id)
 {
-    (city->infractionsByMonth[month - 1][id-1])++;
+    (city->infractionsByMonth[month-1][id-1])++;
 }
 
 char* getTopInfraction(cityADT city, int month)
@@ -429,6 +437,7 @@ char* getTopInfraction(cityADT city, int month)
         }
     }
 
+    free(topID);
     // Create a clone of the current top infraction name for data protection
     char* ans;
     dynamic_strcpy(&ans, currentTopInfractionName);
