@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-
+#define DAYS 31
 #define MONTHS 12
 #define MAX_AMOUNT_OF_CHARACTER 50
 #define AGENCY_NAME 35
@@ -15,40 +15,48 @@
 #define NULL_ID 0
 #define BLOCK 25
 #define ALPHABET 'z' - 'a' + 1
+#define MIN_MAX 2
+#define DMY 3
+#define DD 0
+#define MM 1
+#define YY 2
+#define MIN 0
+#define MAX 1
 
 enum status {ERROR = 0, SUCCESS};
 
 typedef struct cityCDT* cityADT;
 
-//Crea un nuevo TAD
+// Creates a new ADT
 cityADT newCity(void);
 
-// Con el topID ya cargado, crea la matriz de infracciones por mes para la Query 3
+// With the topID already loaded, creates the violation matrix by month for Query 3
 bool initInfractionsByMonth(cityADT city);
 
-//Libeara la memoria reservada por el TAD
+// Frees memory reserved by the ADT
 void freeCity(cityADT city);
 
-//Lee una infraccion para poder identificarla
+// Reads an infraction to identify it
 int addInfraction(cityADT city, int id, char* description);
 
-//Agruega un ticket 
+// Adds a ticket
 void addTicketToMakeQuery1(cityADT city, int id, int year);
 
 void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* plate, int amount);
 
 void addTicketToMakeQuery3(cityADT city, int month, int id);
 
-//Funciones de iteracion para la query1
+void addTicketToMakeQuery4(cityADT city, const char* agencyName, int fineAmount, int year, int month, int day);
 
-//Setea el iterador al inicio de la lista
+// Iteration functions for query1
+
+// Sets the iterator at the beginning of the list
 void toBegin(cityADT city);
 
-//Devuelve 0 si no hay otro nodo en la lista 1 si hay
+// Returns 0 if there is no other node in the list, 1 otherwise
 int hasNext(cityADT city);
 
 //@parametros:
-
 //@year: devuelve por punteros el anio de la infraccion
 //@tickets: devuelve la cantiadad de infracciones 
 //devuelve una copia del nombre de la infraccion 

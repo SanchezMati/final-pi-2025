@@ -1,17 +1,21 @@
 # Variables
 CC = gcc
-FLAGS = -Wall -pedantic -std=c99 
+FLAGS = -Wall -pedantic -std=c99 -lm
 SANITIZE = -fsanitize=address -g
+
 INCLUDES = -I ./frontend/inc -I ./backend/inc
-OUTPUT_FILE_NYC = testNYC
-OUTPUT_FILE_CHI = testCHI
+
+OBJS = main.o backend.o frontend.o
+
+OUTPUT_FILE_NYC = parkingTicketsNYC
+OUTPUT_FILE_CHI = parkingTicketsCHI
+
 SOURCE_FILE = main.c
+
 BACKEND = backend/src/cityADT.c
 FRONTEND = frontend/src/dataValidation.c frontend/src/processData.c frontend/src/queries.c
-QUERY1 = "query1.csv"
-QUERY2 = "query2.csv"
-QUERY3 = "query3.csv"
-QUERIES = $(QUERY1) $(QUERY2) $(QUERY3)
+
+QUERIES = query1.csv query2.csv query3.csv query4.csv
 
 
 # Regla principal para compilar y ejecutar
@@ -27,12 +31,20 @@ clean:
 	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERIES) parkingTicketsNYC parkingTicketsCHI
 
 
-all: parkingTicketsNYC parkingTicketsCHI
+NYC: $(OBJS)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(OBJS) -o ($OUTPUT_FILE_NYC)
 
-parkingTicketsNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o parkingTicketsNYC
+CHI: $(OBJS)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(OBJS) -o ($OUTPUT_FILE_CHI)
 
-parkingTicketsCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o parkingTicketsCHI
+main.o: ($SOURCE_FILE)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c ($SOURCE_FILE)
+
+back.o: ($BACKEND)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c ($BACKEND)
+
+front.o: ($FRONTEND)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c ($FRONTEND)
+
 
 

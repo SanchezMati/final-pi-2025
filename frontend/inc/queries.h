@@ -4,6 +4,7 @@
 #include "cityADT.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define FILE_ERROR NULL
 #define ERROR 0
@@ -21,11 +22,13 @@
 #define HEADER3 "month;topInfraction"
 
 #define QUERY4 "query4.csv"
+#define HEADER4 "agency;maxDailyAvg;maxDailyDate;minDailyAvg;minDailyDate;spread"
 
 void handleQueryError(cityADT city, int queryNum);
 int makeQuery1(cityADT city);
 int makeQuery2(cityADT city);
 int makeQuery3(cityADT city);
+int makeQuery4(cityADT city);
 
 char* intToMonth(int number);
 

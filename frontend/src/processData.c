@@ -1,9 +1,9 @@
 #include "processData.h"
 
-#define LENGTH_OF_AGENCY_NAME (35 + 1) //35 chars + '\0'
-#define LENGTH_OF_PLATES (10 + 1)  //plates lenght
+#define LENGTH_OF_AGENCY_NAME (35 + 1) // 35 chars + '\0'
+#define LENGTH_OF_PLATES (10 + 1)  
  
-#define SIZE_LINE_INFRACTIONS 55
+#define SIZE_LINE_INFRACTIONS 55 
 #define SIZE_LINE_TICKETS 65
 
 enum fileType {INVALID = 0, NYC, CHI};
@@ -49,7 +49,6 @@ void ticketsReader(FILE * file, cityADT city, int fileType)
         printf("Processing NYC file\n");
         while (fgets(line, sizeof(line), file)) 
         {
-           // printf("Reading line: %s", line);
             if (line[0] != '\0') {
                 processNYCTicketLine(line, city);
             }
@@ -73,6 +72,7 @@ void processNYCTicketLine(const char * line, cityADT city)
     if (line == NULL || city == NULL) {
         return;
     }
+
     char plate[LENGTH_OF_PLATES] = {0};
     char agencyName[LENGTH_OF_AGENCY_NAME] = {0};
     int infractionId = 0, fineAmount = 0, year = 0, month = 0, day = 0;
@@ -193,10 +193,8 @@ bool isValidDate(const int day, const int month, const int year) {
     return day <= daysInMonth[month - 1];
 }
 
-
 void processTicket(cityADT city, char plate[], int year, int day, int month, int id, int fineAmount, char agencyName[])
 {
-   // printf("\nProcessing ticket: plate=%s, agency=%s, amount=%d\n", plate, agencyName, fineAmount);
     if (
         city == NULL || plate == NULL || agencyName == NULL || 
         id <= 0 || fineAmount < 0 || !isValidDate(day, month, year)
@@ -210,4 +208,6 @@ void processTicket(cityADT city, char plate[], int year, int day, int month, int
     addTicketToMakeQuery2(city, agencyName, plate, fineAmount);
     
     addTicketToMakeQuery3(city, month, id);
+
+    addTicketToMakeQuery4(city, agencyName, fineAmount, year, month, day);
 }

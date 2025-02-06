@@ -1,19 +1,42 @@
 #include "cityADT.h"
 
+typedef struct amountDay{
+    size_t totalAmount;
+    size_t numFines;
+}tAmountDay;
+
+typedef struct year{
+    int year;
+    tAmountDay dateMtx[MONTHS][DAYS];
+    struct year * next;
+}tYear;
+
+typedef struct agencyDaily{
+    char name[AGENCY_NAME+1];
+    float minAvg;
+    float maxAvg;
+    size_t date[MIN_MAX][DMY];
+    
+    tYear * firstYear;
+    tYear * lastYear;
+
+    struct agencyDaily * next;
+} tAgencyDaily;
+
 typedef struct plateNode {
-    char plate[PLATE+1];        // Plate
+    char plate[PLATE+1];        
     size_t total;               // Total sum of fine amounts for this plate
     struct plateNode* next;     
 } tPlateNode;
 
 typedef struct agencyNode {
-    char name[AGENCY_NAME+1];   // Agency name
+    char name[AGENCY_NAME+1];   
     char topPlate[PLATE+1];     // Plate with highest grossing for this agency
     size_t maxTotal;            // Total amount of topPlate fines
     
-    tPlateNode* plates;         // List of plates and their total amounts
+    tPlateNode * plates;         // List of plates and their total amounts
     
-    struct agencyNode* next;   
+    struct agencyNode * next;   
 } tAgencyNode;
 
 typedef struct infractionsByYear
@@ -22,16 +45,15 @@ typedef struct infractionsByYear
     int year; // Year of the infraction
     size_t total; // Amount of that infraction issued in that year
 
-    struct infractionsByYear* next;
-}
-tInfractionsByYear;
+    struct infractionsByYear * next;
+} tInfractionsByYear;
 
 struct cityCDT
 {
     //Query1 =================
-    tInfractionsByYear* first;
-    tInfractionsByYear* iter;
-    char** infractionsName; // Vector with the name of the infractions 
+    tInfractionsByYear * first; 
+    tInfractionsByYear * iter;
+    char ** infractionsName; // Vector with the name of the infractions 
     int topID;
     /*========================*/
 
@@ -41,7 +63,12 @@ struct cityCDT
     /*========================*/
 
     //Query3 =================
-    size_t* infractionsByMonth[MONTHS]; //Vector donde v[0][0] == cantidad de infracciones de id 1 en enero 
+    size_t * infractionsByMonth[MONTHS]; //Vector donde v[0][0] == cantidad de infracciones de id 1 en enero 
+    /*========================*/
+
+    //Query4 =================
+    tAgencyDaily * firstAgencyDaily;
+    tAgencyDaily * agencyDailyIter;
     /*========================*/
 };
 
@@ -51,15 +78,15 @@ static void freeQuery1(cityADT city);
 static void freeQuery1Rec(tInfractionsByYear* list);
 static void freeInfractions(char** v, int dim);
 static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name, int year);
-static void freeAgenciesRec(tAgencyNode* current); 
+static void freeQuery2(tAgencyNode* current); 
 static void freePlatesRec(tPlateNode* current); 
 static void freeQuery3(cityADT city);
 
 void freeCity(cityADT city)
 {
     freeQuery1(city);
+    freeQuery2(city->firstAgency);
     freeQuery3(city);
-    freeAgenciesRec(city->firstAgency);
     free(city);
 }
 
@@ -106,11 +133,11 @@ static void freePlatesRec(tPlateNode* current) {
     free(current);
 }
 
-static void freeAgenciesRec(tAgencyNode* current) {
+static void freeQuery2(tAgencyNode* current) {
     if (current == NULL) {
         return;
     }
-    freeAgenciesRec(current->next);
+    freeQuery2(current->next);
     freePlatesRec(current->plates);
     free(current);
 }
@@ -206,7 +233,7 @@ int addInfraction(cityADT city, int id, char* description) {
             return ERROR;
         }
     }
-    
+
     return SUCCESS;
 }
 
@@ -225,7 +252,7 @@ static tAgencyNode* findOrCreateAgencyRec(tAgencyNode* current, tAgencyNode** pr
 }
 
 static tAgencyNode* createAgency(const char* agencyName) {
-    tAgencyNode* new = calloc(1, sizeof(tAgencyNode));
+    tAgencyNode* new = malloc(sizeof(tAgencyNode));
     if (new == NULL) {
         return NULL;
     }
@@ -333,7 +360,7 @@ int hasNext(cityADT city)
     return city->iter != NULL;
 }
 
-char* next(cityADT city, int* year, int* tickets) {
+char * next(cityADT city, int* year, int* tickets) {
     if(!hasNext(city)) {
         return NULL; 
     }
@@ -341,7 +368,7 @@ char* next(cityADT city, int* year, int* tickets) {
     *year = city->iter->year;
     *tickets = city->iter->total;
     
-    char* name;
+    char * name;
     dynamic_strcpy(&name, city->iter->name);
     if(name == NULL || errno == ENOMEM) 
     {
@@ -351,11 +378,11 @@ char* next(cityADT city, int* year, int* tickets) {
     return name;
 }
 
-static void dynamic_strcpy(char** dest, const char* src)
+static void dynamic_strcpy(char ** dest, const char* src)
 {   
     errno = 0;
     int i;
-    char* aux = NULL;
+    char * aux = NULL;
     for(i = 0; src[i] != '\0'; i++)
     {
         if(i%BLOCK == 0)
@@ -408,7 +435,7 @@ void addTicketToMakeQuery3(cityADT city, int month, int id)
     (city->infractionsByMonth[month-1][id-1])++;
 }
 
-char* getTopInfraction(cityADT city, int month)
+char * getTopInfraction(cityADT city, int month)
 {
     int dim = city->topID;
     int* topID = NULL; //Vector con el id de las infracciones mas populares en ese mes
@@ -449,7 +476,143 @@ char* getTopInfraction(cityADT city, int month)
 
     free(topID);
     // Create a clone of the current top infraction name for data protection
-    char* ans;
+    char * ans;
     dynamic_strcpy(&ans, currentTopInfractionName);
     return ans;
+}
+
+void addTicketToMakeQuery4(cityADT city, const char* agencyName, int fineAmount, int year, int month, int day)
+{
+    city->firstAgencyDaily = addAgencyDaily(city->firstAgencyDaily, agencyName, fineAmount, year, month, day);
+}
+
+static tAgencyDaily* addAgencyDaily(tAgencyDaily* list, char* name, int fineAmount, int year, int month, int day)
+{
+    errno = 0;
+    int c;
+    if(list == NULL ||  (c = strcmp(list->name, name)) < 0)
+    {
+        tAgencyDaily* aux = calloc(1, sizeof(tAgencyDaily));
+        if(aux == NULL || errno == ENOMEM)
+        {
+            return list;
+        }
+        strcpy(aux->name, name);
+        aux->firstYear = addYear(aux->firstYear, year, month, day, fineAmount);
+        aux->next = list;
+        return aux;
+    }
+    else if(c == 0)
+    {
+        list->firstYear = addYear(list->firstYear, year, month, day, fineAmount);
+        return list;
+    }
+
+    list->next = addAgencyDaily(list->next, name, fineAmount, year, month, day);
+    return list;
+}
+
+static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount)
+{
+    if(list == NULL || year > list->year)
+    {
+        tYear* aux = calloc(1, sizeof(tYear));
+        if(aux == NULL)
+        {
+            return list;
+        }
+        aux->year = year;
+        addAmount(aux, fineAmount, month, day);
+        return aux;
+    }
+    else if(year == list->year)
+    {
+        addAmount(list, fineAmount, month, day);
+    }
+    
+    list->next = addYear(list->next, year, month, day, fineAmount);
+    return list;
+}
+
+//Checkear
+static void addAmount(tYear * year, size_t amount, size_t month, size_t day){
+    tAmountDay amountDay = year -> dateMtx[month][day];
+    amountDay.totalAmount += amount;
+    amountDay.numFines++;
+}
+
+static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max){
+    * min = agency -> minAvg;
+    * max = agency -> maxAvg;
+}
+
+static void getDateMinMax(tAgencyDaily * agency, char ** maxDailyDate, char ** minDailyDate){
+    int * minDate = agency -> date[MIN];
+    int * maxDate = agency -> date[MAX];
+
+    sprintf(*maxDailyDate, "%d/%d/%d", maxDate[DD], maxDate[MM], maxDate[YY]);
+    sprintf(*minDailyDate, "%d,%d,%d", minDate[DD], minDate[MM], minDate[YY]);
+}
+
+static void avgData(tAgencyDaily * agency, tYear * year){
+    if(year == NULL){
+        return;
+    }
+    for(int i = 0; i < MONTHS; i++){
+        for(int j = 0; j < DAYS; j++){
+            size_t c = year -> dateMtx[i][j].totalAmount;
+            size_t d = year -> dateMtx[i][j].numFines;
+            if(c != 0){
+                float avg = c/d;
+                updateData(agency, avg, year -> year, i, j);
+            }
+        }
+    }
+    avgData(agency, year -> next);
+}
+
+static void updateData(tAgencyDaily * agency, float avg, int year, int month, int day){
+    float min = agency -> minAvg;
+    float max = agency -> maxAvg; 
+    if(min > avg){
+        min = avg;
+        agency -> date[MIN][DD] = day;
+        agency -> date[MIN][MM] = month;
+        agency -> date[MIN][YY] = year;
+    }
+    if(max < avg){
+        max = avg;
+        agency -> date[MAX][DD] = day;
+        agency -> date[MAX][MM] = month;
+        agency -> date[MAX][YY] = year;
+    }
+    return;       
+}
+
+void toBeginQuery4(cityADT city)
+{
+    city->agencyDailyIter = city->firstAgencyDaily;
+}
+
+int hasNextQuery4(cityADT city)
+{
+    return city->agencyDailyIter != NULL;
+}
+
+char * nextQuery4(cityADT city, int * minDailyAvg, int * maxDailyAvg, char ** maxDailyDate, char ** minDailyDate)
+{
+    if(!hasNextQuery4(city))
+    {
+        return NULL;
+    }
+
+    getMinMaxAvg(city -> agencyDailyIter, minDailyAvg, maxDailyAvg);
+    getDateMinMax(city -> agencyDailyIter, maxDailyDate, minDailyDate);
+
+    char * name;
+
+    dynamic_strcpy(name, city->agencyDailyIter->name);
+    city->agencyDailyIter = city->agencyDailyIter->next;
+
+    return name;
 }

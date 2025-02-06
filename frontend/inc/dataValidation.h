@@ -5,11 +5,10 @@
 #include <string.h>
 #include <stdio.h>
 
-//Devuelve 0 si fileName no es un archivo .csv, 1 en caso contrario
+// Returns 0 if fileName is not a .csv file, 1 otherwise
 int isCsvFile(const char *fileName);
 
-/*Devuelve 0 si fileName no es un archivo valido
-  1 si es NYC o 2 si es CHI*/
+// Returns 0 if fileName is not a valid file, 1 if it is NYC or 2 if it is CHI
 int isValidExecutable(const char* fileName);
 
 #endif

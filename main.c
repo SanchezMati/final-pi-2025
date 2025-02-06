@@ -2,18 +2,13 @@
 #include "main.h"
 #include <time.h> 
 
-/*Este mismo enum se repite en los archivos de proccesData.c y dataValidation.c.
-no se si es de buen estilo o si seria mejor ponerlo todo en un solo archivo .h 
-e incluirlo en los tres archivos*/
-/*tal vez con agruegarlos en sus respectivos .h alcanze*/
-
 int main(int argc, char* argv[])
 {
 
     clock_t start, end;
     double cpu_time_used;
 
-    start = clock();  // Inicia la medición
+    start = clock();  // Starts timer
 
     if(argc != AMOUNT_OF_ARGUMENTS+1)
     {
@@ -28,7 +23,6 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    //Creo que no hace falta validarlo, (pag 4, enunciado)
     for (int i = 1; i <= AMOUNT_OF_ARGUMENTS; i++) 
     {
         if (!isCsvFile(argv[i])) 
@@ -41,14 +35,14 @@ int main(int argc, char* argv[])
     FILE* tickets = fopen(argv[TICKETS], "r");
     if (tickets == NULL)
     {
-        fprintf(stderr, "Error al abrir el archivo: %s\n", argv[TICKETS]);
+        fprintf(stderr, "Error opening file: %s\n", argv[TICKETS]);
         exit(EXIT_FAILURE);
     }
 
     FILE* infractions = fopen(argv[INFRACTIONS], "r");
     if (infractions == NULL) 
     {
-        fprintf(stderr, "Error al abrir el archivo: %s\n", argv[INFRACTIONS]);
+        fprintf(stderr, "Error opening file: %s\n", argv[INFRACTIONS]);
         exit(EXIT_FAILURE);
     }
 
@@ -88,18 +82,18 @@ int main(int argc, char* argv[])
         handleQueryError(city, 3);
     }
 
-    // if (makeQuery4(city) == ERROR) 
-    // {
-    //     handleQueryError(city, 4);
-    // }
+    if (makeQuery4(city) == ERROR) 
+    {
+        handleQueryError(city, 4);
+    }
 
     freeCity(city);
 
-    end = clock();  // Finaliza la medición
-    // Calcula el tiempo en segundos
+    end = clock();  // Ends timer
+    // Calculates time in seconds
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-    printf("Tiempo de ejecución: %f segundos\n", cpu_time_used);
+    printf("Execution time: %f seconds\n", cpu_time_used);
     puts("OK!");
     
     return 0;

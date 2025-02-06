@@ -1,5 +1,4 @@
 #include "queries.h"
-#include "cityADT.h"
 
 static FILE* openFile(const char* query, const char* header)
 {
@@ -11,6 +10,16 @@ static FILE* openFile(const char* query, const char* header)
     }
     fprintf(file, "%s\n", header);
     return file;
+}
+
+char* intToMonth(int number)
+{
+    char* months[] = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+
+    return months[number];
 }
 
 void handleQueryError(cityADT city, int queryNum) 
@@ -29,12 +38,14 @@ int makeQuery1(cityADT city)
         return ERROR;
     }
 
+    int year;
+    int tickets;
+    char* infraction;
+
     toBegin(city);
     while(hasNext(city))
     {
-        int year;
-        int tickets;
-        char* infraction = next(city, &year, &tickets);
+        infraction = next(city, &year, &tickets);
         fprintf(file, "%s%s%d%s%d\n", infraction, DELIMITER, year, DELIMITER, tickets);
         free(infraction);
     }
@@ -91,12 +102,38 @@ int makeQuery3(cityADT city)
     return SUCCESS;
 }
 
-char* intToMonth(int number)
-{
-    char* months[] = {
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    };
 
-    return months[number];
+int makeQuery4(cityADT city)
+{
+    printf("\n=== Starting Query 4 ===\n");
+    FILE* file = openFile(QUERY4, HEADER4);
+    if(file == FILE_ERROR) 
+    {
+        return ERROR;
+    }
+
+    char* agency;
+    int maxDailyAvg, minDailyAvg, spread;
+    char* maxDailyDate, minDailyDate;
+    
+    toBeginQuery4(city);
+    while(hasNextQuery4(city))
+    {
+        // agency;maxDailyAvg;maxDailyDate;minDailyAvg;minDailyDate;spread
+        agency = nextQuery4(city, &maxDailyAvg, &minDailyAvg, &maxDailyDate, &minDailyDate);
+        
+        maxDailyAvg = trunc(maxDailyAvg*100)/100;
+        minDailyAvg = trunc(minDailyAvg*100)/100;
+        
+        spread = maxDailyAvg - minDailyAvg;
+
+        spread = trunc(spread*100)/100;
+
+        fprintf(file, "%s%s%f%s%s%s%f%s%s%s%f", agency, DELIMITER, maxDailyAvg, DELIMITER, maxDailyDate, DELIMITER, minDailyAvg, DELIMITER, minDailyDate, DELIMITER, spread);
+        free(agency);
+    }
+    
+    fclose(file);
+    printf("=== Query 4 Completed ===\n");
+    return SUCCESS;
 }

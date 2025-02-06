@@ -2,7 +2,6 @@
 
 enum fileType {INVALID = 0, NYC, CHI};
 
-
 int isCsvFile(const char *fileName) 
 {
     const char* ext = strrchr(fileName, '.'); 
