@@ -512,8 +512,8 @@ static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max){
 static void getDateMinMax(tAgencyDaily * agency, char * maxDailyDate, char * minDailyDate){
     int * minDate = agency -> date[MIN];
     int * maxDate = agency -> date[MAX];
-    snprintf(maxDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", maxDate[DD], maxDate[MM], maxDate[YY]);
-    snprintf(minDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", minDate[DD], minDate[MM], minDate[YY]);
+    snprintf(maxDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", maxDate[DD]+1|, maxDate[MM]+1, maxDate[YY]);
+    snprintf(minDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", minDate[DD]+1, minDate[MM]+1, minDate[YY]);
 }
 
 static void avgData(tAgencyDaily * agency, tYear * year){
