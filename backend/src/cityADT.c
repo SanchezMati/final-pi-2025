@@ -18,7 +18,6 @@ typedef struct agencyDaily{
     int date[MIN_MAX][DMY];
     
     tYear * firstYear;
-    tYear * lastYear;
 
     struct agencyDaily * next;
 } tAgencyDaily;
@@ -85,7 +84,7 @@ static tAgencyDaily* addAgencyDaily(tAgencyDaily* list, char* name, int fineAmou
 static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount);
 static void addAmount(tYear * year, int amount, int month, int day);
 static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max);
-static void getDateMinMax(tAgencyDaily * agency, char ** maxDailyDate, char ** minDailyDate);
+static void getDateMinMax(tAgencyDaily * agency, char * maxDailyDate, char * minDailyDate);
 static void avgData(tAgencyDaily * agency, tYear * year);
 static void updateData(tAgencyDaily * agency, float avg, int year, int month, int day);
 
@@ -420,7 +419,7 @@ char * getTopInfraction(cityADT city, int month)
 }
 
 void addTicketToMakeQuery4(cityADT city, char* agencyName, int fineAmount, int year, int month, int day)
-{
+{   
     city->firstAgencyDaily = addAgencyDaily(city->firstAgencyDaily, agencyName, fineAmount, year, month, day);
 }
 
@@ -428,15 +427,20 @@ static tAgencyDaily* addAgencyDaily(tAgencyDaily* list, char* name, int fineAmou
 {
     errno = 0;
     int c;
-    if(list == NULL || (c = strcmp(list->name, name)) < 0)
+    if(list == NULL || (c = strcmp(list->name, name)) > 0)
     {
+        // Create a new agency
         tAgencyDaily* aux = calloc(1, sizeof(tAgencyDaily));
         if(aux == NULL || errno == ENOMEM)
         {
             return list;
         }
+
+        // Set its internal data
         strcpy(aux->name, name);
         aux->firstYear = addYear(aux->firstYear, year, month, day, fineAmount);
+
+        // Put the new agency into the list at the corresponding position
         aux->next = list;
         return aux;
     }
@@ -461,11 +465,13 @@ static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount)
         }
         aux->year = year;
         addAmount(aux, fineAmount, month, day);
+        aux->next = list;
         return aux;
     }
     else if(year == list->year)
     {
         addAmount(list, fineAmount, month, day);
+        return list;
     }
     
     list->next = addYear(list->next, year, month, day, fineAmount);
@@ -474,7 +480,7 @@ static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount)
 
 //Checkear
 static void addAmount(tYear * year, int amount, int month, int day){
-    tAmountDay amountDay = year -> dateMtx[month-1][day-1];
+    tAmountDay amountDay = year -> dateMtx[month - 1][day - 1];
     amountDay.totalAmount += amount;
     amountDay.numFines++;
 }
@@ -484,12 +490,11 @@ static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max){
     * max = agency -> maxAvg;
 }
 
-static void getDateMinMax(tAgencyDaily * agency, char ** maxDailyDate, char ** minDailyDate){
+static void getDateMinMax(tAgencyDaily * agency, char * maxDailyDate, char * minDailyDate){
     int * minDate = agency -> date[MIN];
     int * maxDate = agency -> date[MAX];
-
-    sprintf(*maxDailyDate, "%d/%d/%d", maxDate[DD], maxDate[MM], maxDate[YY]);
-    sprintf(*minDailyDate, "%d,%d,%d", minDate[DD], minDate[MM], minDate[YY]);
+    snprintf(maxDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", maxDate[DD], maxDate[MM], maxDate[YY]);
+    snprintf(minDailyDate, MAX_DATE_LENGTH, "%d,%d,%d", minDate[DD], minDate[MM], minDate[YY]);
 }
 
 static void avgData(tAgencyDaily * agency, tYear * year){
@@ -537,7 +542,7 @@ int hasNextQuery4(cityADT city)
     return city->agencyDailyIter != NULL;
 }
 
-char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char ** maxDailyDate, char ** minDailyDate)
+char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char * maxDailyDate, char * minDailyDate)
 {
     if(!hasNextQuery4(city))
     {

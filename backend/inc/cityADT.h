@@ -22,6 +22,7 @@
 #define YY 2
 #define MIN 0
 #define MAX 1
+#define MAX_DATE_LENGTH 12
 
 enum status {ERROR = 0, SUCCESS};
 
@@ -70,6 +71,6 @@ char* getTopInfraction(cityADT city, int month);
 
 void toBeginQuery4(cityADT city);
 int hasNextQuery4(cityADT city);
-char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char ** maxDailyDate, char ** minDailyDate);
+char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char * maxDailyDate, char * minDailyDate);
 
 #endif

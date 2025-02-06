@@ -114,14 +114,14 @@ int makeQuery4(cityADT city)
 
     char* agency;
     float maxDailyAvg, minDailyAvg, spread;
-    char* maxDailyDate;
-    char* minDailyDate;
+    char maxDailyDate[MAX_DATE_LENGTH];
+    char minDailyDate[MAX_DATE_LENGTH];
     
     toBeginQuery4(city);
     while(hasNextQuery4(city))
     {
         // agency;maxDailyAvg;maxDailyDate;minDailyAvg;minDailyDate;spread
-        agency = nextQuery4(city, &maxDailyAvg, &minDailyAvg, &maxDailyDate, &minDailyDate);
+        agency = nextQuery4(city, &maxDailyAvg, &minDailyAvg, maxDailyDate, minDailyDate);
         
         maxDailyAvg = trunc(maxDailyAvg*100)/100;
         minDailyAvg = trunc(minDailyAvg*100)/100;
@@ -130,7 +130,7 @@ int makeQuery4(cityADT city)
 
         spread = trunc(spread*100)/100;
 
-        fprintf(file, "%s%s%f%s%s%s%f%s%s%s%f", agency, DELIMITER, maxDailyAvg, DELIMITER, maxDailyDate, DELIMITER, minDailyAvg, DELIMITER, minDailyDate, DELIMITER, spread);
+        fprintf(file, "%s%s%f%s%s%s%f%s%s%s%f\n", agency, DELIMITER, maxDailyAvg, DELIMITER, maxDailyDate, DELIMITER, minDailyAvg, DELIMITER, minDailyDate, DELIMITER, spread);
         free(agency);
     }
     
