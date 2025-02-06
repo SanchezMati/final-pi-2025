@@ -1,8 +1,8 @@
 #include "cityADT.h"
 
 typedef struct amountDay{
-    size_t totalAmount;
-    size_t numFines;
+    int totalAmount;
+    int numFines;
 }tAmountDay;
 
 typedef struct year{
@@ -15,7 +15,7 @@ typedef struct agencyDaily{
     char name[AGENCY_NAME+1];
     float minAvg;
     float maxAvg;
-    size_t date[MIN_MAX][DMY];
+    int date[MIN_MAX][DMY];
     
     tYear * firstYear;
     tYear * lastYear;
@@ -81,6 +81,13 @@ static tInfractionsByYear* addInfractionRec(tInfractionsByYear* list, char* name
 static void freeQuery2(tAgencyNode* current); 
 static void freePlatesRec(tPlateNode* current); 
 static void freeQuery3(cityADT city);
+static tAgencyDaily* addAgencyDaily(tAgencyDaily* list, char* name, int fineAmount, int year, int month, int day);
+static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount);
+static void addAmount(tYear * year, size_t amount, size_t month, size_t day);
+static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max);
+static void getDateMinMax(tAgencyDaily * agency, char ** maxDailyDate, char ** minDailyDate);
+static void avgData(tAgencyDaily * agency, tYear * year);
+static void updateData(tAgencyDaily * agency, float avg, int year, int month, int day);
 
 void freeCity(cityADT city)
 {
@@ -237,74 +244,12 @@ int addInfraction(cityADT city, int id, char* description) {
     return SUCCESS;
 }
 
-
-static tAgencyNode* findOrCreateAgencyRec(tAgencyNode* current, tAgencyNode** prev, const char* agencyName) {
-    if (current == NULL || strcmp(current->name, agencyName) > 0) {
-        return NULL;
-    }
-    
-    if (strcmp(current->name, agencyName) == 0) {
-        return current;
-    }
-    
-    *prev = current;
-    return findOrCreateAgencyRec(current->next, prev, agencyName);
-}
-
-static tAgencyNode* createAgency(const char* agencyName) {
-    tAgencyNode* new = malloc(sizeof(tAgencyNode));
-    if (new == NULL) {
-        return NULL;
-    }
-    strncpy(new->name, agencyName, AGENCY_NAME);
-    new->name[AGENCY_NAME] = '\0';
-    new->maxTotal = 0;
-    new->topPlate[0] = '\0';
-    new->plates = NULL;
-    new->next = NULL;
-    return new;
-}
-
 static void updateTopPlate(tAgencyNode* agency, const char* plate, int amount) {
     if (amount > agency->maxTotal || 
         (amount == agency->maxTotal && strcmp(plate, agency->topPlate) < 0)) {
         agency->maxTotal = amount;
         strncpy(agency->topPlate, plate, PLATE);
         agency->topPlate[PLATE] = '\0';
-    }
-}
-
-static tPlateNode* updateAgencyPlateRec(tPlateNode* current, tPlateNode** prev, 
-                                      const char* plate, size_t amount, tAgencyNode* agency) {
-    while (current != NULL && strcmp(current->plate, plate) < 0) {
-        *prev = current;
-        current = current->next;
-    }
-
-    if (current != NULL && strcmp(current->plate, plate) == 0) {
-        current->total += amount;
-        updateTopPlate(agency, plate, current->total);
-        return NULL;
-    }
-
-    tPlateNode* new = malloc(sizeof(tPlateNode));
-    if (new == NULL) {
-        return NULL;
-    }
-    
-    strncpy(new->plate, plate, PLATE);
-    new->plate[PLATE] = '\0';
-    new->total = amount;
-    
-    updateTopPlate(agency, plate, amount);
-    
-    if (*prev == NULL) {
-        new->next = current;
-        return new;  
-    } else {
-        new->next = current;
-        (*prev)->next = new;
-        return NULL;  
     }
 }
 
@@ -481,7 +426,7 @@ char * getTopInfraction(cityADT city, int month)
     return ans;
 }
 
-void addTicketToMakeQuery4(cityADT city, const char* agencyName, int fineAmount, int year, int month, int day)
+void addTicketToMakeQuery4(cityADT city, char* agencyName, int fineAmount, int year, int month, int day)
 {
     city->firstAgencyDaily = addAgencyDaily(city->firstAgencyDaily, agencyName, fineAmount, year, month, day);
 }
@@ -599,7 +544,7 @@ int hasNextQuery4(cityADT city)
     return city->agencyDailyIter != NULL;
 }
 
-char * nextQuery4(cityADT city, int * minDailyAvg, int * maxDailyAvg, char ** maxDailyDate, char ** minDailyDate)
+char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char ** maxDailyDate, char ** minDailyDate)
 {
     if(!hasNextQuery4(city))
     {
@@ -611,7 +556,7 @@ char * nextQuery4(cityADT city, int * minDailyAvg, int * maxDailyAvg, char ** ma
 
     char * name;
 
-    dynamic_strcpy(name, city->agencyDailyIter->name);
+    dynamic_strcpy(&name, city->agencyDailyIter->name);
     city->agencyDailyIter = city->agencyDailyIter->next;
 
     return name;

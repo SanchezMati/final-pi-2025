@@ -46,7 +46,7 @@ void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* pla
 
 void addTicketToMakeQuery3(cityADT city, int month, int id);
 
-void addTicketToMakeQuery4(cityADT city, const char* agencyName, int fineAmount, int year, int month, int day);
+void addTicketToMakeQuery4(cityADT city, char* agencyName, int fineAmount, int year, int month, int day);
 
 // Iteration functions for query1
 
@@ -67,5 +67,9 @@ int hasNextQuery2(cityADT city);
 void nextQuery2(cityADT city, char* agencyName, char* topPlate, size_t* total);
 
 char* getTopInfraction(cityADT city, int month);
+
+void toBeginQuery4(cityADT city);
+int hasNextQuery4(cityADT city);
+char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char ** maxDailyDate, char ** minDailyDate);
 
 #endif

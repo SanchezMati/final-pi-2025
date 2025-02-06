@@ -113,8 +113,9 @@ int makeQuery4(cityADT city)
     }
 
     char* agency;
-    int maxDailyAvg, minDailyAvg, spread;
-    char* maxDailyDate, minDailyDate;
+    float maxDailyAvg, minDailyAvg, spread;
+    char* maxDailyDate;
+    char* minDailyDate;
     
     toBeginQuery4(city);
     while(hasNextQuery4(city))
