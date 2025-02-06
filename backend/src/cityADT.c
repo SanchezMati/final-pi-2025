@@ -83,7 +83,7 @@ static void freePlatesRec(tPlateNode* current);
 static void freeQuery3(cityADT city);
 static tAgencyDaily* addAgencyDaily(tAgencyDaily* list, char* name, int fineAmount, int year, int month, int day);
 static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount);
-static void addAmount(tYear * year, size_t amount, size_t month, size_t day);
+static void addAmount(tYear * year, int amount, int month, int day);
 static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max);
 static void getDateMinMax(tAgencyDaily * agency, char ** maxDailyDate, char ** minDailyDate);
 static void avgData(tAgencyDaily * agency, tYear * year);
@@ -242,15 +242,6 @@ int addInfraction(cityADT city, int id, char* description) {
     }
 
     return SUCCESS;
-}
-
-static void updateTopPlate(tAgencyNode* agency, const char* plate, int amount) {
-    if (amount > agency->maxTotal || 
-        (amount == agency->maxTotal && strcmp(plate, agency->topPlate) < 0)) {
-        agency->maxTotal = amount;
-        strncpy(agency->topPlate, plate, PLATE);
-        agency->topPlate[PLATE] = '\0';
-    }
 }
 
 void addTicketToMakeQuery2(cityADT city, const char* agencyName, const char* plate, int amount) 
@@ -480,7 +471,7 @@ static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount)
 }
 
 //Checkear
-static void addAmount(tYear * year, size_t amount, size_t month, size_t day){
+static void addAmount(tYear * year, int amount, int month, int day){
     tAmountDay amountDay = year -> dateMtx[month][day];
     amountDay.totalAmount += amount;
     amountDay.numFines++;
@@ -505,8 +496,8 @@ static void avgData(tAgencyDaily * agency, tYear * year){
     }
     for(int i = 0; i < MONTHS; i++){
         for(int j = 0; j < DAYS; j++){
-            size_t c = year -> dateMtx[i][j].totalAmount;
-            size_t d = year -> dateMtx[i][j].numFines;
+            int c = year -> dateMtx[i][j].totalAmount;
+            int d = year -> dateMtx[i][j].numFines;
             if(c != 0){
                 float avg = c/d;
                 updateData(agency, avg, year -> year, i, j);
@@ -550,7 +541,7 @@ char * nextQuery4(cityADT city, float * minDailyAvg, float * maxDailyAvg, char *
     {
         return NULL;
     }
-
+    avgData(city -> agencyDailyIter, city -> agencyDailyIter -> firstYear);
     getMinMaxAvg(city -> agencyDailyIter, minDailyAvg, maxDailyAvg);
     getDateMinMax(city -> agencyDailyIter, maxDailyDate, minDailyDate);
 
