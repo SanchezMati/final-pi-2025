@@ -93,7 +93,25 @@ void freeCity(cityADT city)
     freeQuery1(city);
     freeQuery2(city->firstAgency);
     freeQuery3(city);
+    freeQuery4(city -> firstAgencyDaily);
     free(city);
+}
+
+static void freeQuery4(tAgencyDaily * agency){
+    if(agency == NULL){
+        return;
+    }
+    freeQuery4YearsRec(agency -> firstYear);
+    freeQuery4(agency -> next);
+    free(agency);
+}
+
+static void freeQuery4YearsRec(tYear * year){
+    if(year == NULL){
+        return;
+    }
+    freeQuery4YearsRec(year -> next);
+    free(year);
 }
 
 static void freeQuery3(cityADT city)
