@@ -5,46 +5,47 @@ SANITIZE = -fsanitize=address -g
 
 INCLUDES = -I ./frontend/inc -I ./backend/inc
 
-OBJS = main.o backend.o frontend.o
-
 OUTPUT_FILE_NYC = parkingTicketsNYC
 OUTPUT_FILE_CHI = parkingTicketsCHI
 
 SOURCE_FILE = main.c
 
-BACKEND = backend/src/cityADT.c
-FRONTEND = frontend/src/dataValidation.c frontend/src/processData.c frontend/src/queries.c
+BACKEND_SRCS = backend/src/cityADT.c
+BACKEND_OBJS = cityADT.o
+FRONTEND_SRCS = frontend/src/dataValidation.c frontend/src/processData.c frontend/src/queries.c
+FRONTEND_OBJS = dataValidation.o processData.o queries.o
+
+OBJS = $(BACKEND_OBJS) $(FRONTEND_OBJS) main.o
 
 QUERIES = query1.csv query2.csv query3.csv query4.csv
 
 
 # Regla principal para compilar y ejecutar
-testNYC: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE_NYC)
 
-testCHI: $(SOURCE_FILE) $(BACKEND) $(FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(SOURCE_FILE) $(BACKEND) $(FRONTEND) -o $(OUTPUT_FILE_CHI)
+NYC: $(OBJS)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(OBJS) -o $(OUTPUT_FILE_NYC)
+
+CHI: $(OBJS)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(OBJS) -o $(OUTPUT_FILE_CHI)
+
+main.o: $(SOURCE_FILE)
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c $(SOURCE_FILE)
+
+cityADT.o: backend/src/cityADT.c
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c backend/src/cityADT.c
+
+dataValidation.o: frontend/src/dataValidation.c
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c frontend/src/dataValidation.c
+
+processData.o: frontend/src/processData.c	
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c frontend/src/processData.c
+
+queries.o: frontend/src/queries.c
+	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c frontend/src/queries.c
 
 
 # Limpieza de archivos generados
 clean:
-	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERIES) parkingTicketsNYC parkingTicketsCHI
-
-
-NYC: $(OBJS)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(OBJS) -o ($OUTPUT_FILE_NYC)
-
-CHI: $(OBJS)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) $(OBJS) -o ($OUTPUT_FILE_CHI)
-
-main.o: ($SOURCE_FILE)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c ($SOURCE_FILE)
-
-back.o: ($BACKEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c ($BACKEND)
-
-front.o: ($FRONTEND)
-	$(CC) $(FLAGS) $(SANITIZE) $(INCLUDES) -c ($FRONTEND)
-
+	rm -f $(OUTPUT_FILE_CHI) $(OUTPUT_FILE_NYC) $(QUERIES) parkingTicketsNYC parkingTicketsCHI *.o
 
 

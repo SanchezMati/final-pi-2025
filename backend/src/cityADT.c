@@ -478,11 +478,10 @@ static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount)
     return list;
 }
 
-//Checkear
 static void addAmount(tYear * year, int amount, int month, int day){
-    tAmountDay amountDay = year -> dateMtx[month - 1][day - 1];
-    amountDay.totalAmount += amount;
-    amountDay.numFines++;
+    tAmountDay * amountDay = &(year -> dateMtx[month - 1][day - 1]);
+    amountDay->totalAmount += amount;
+    (amountDay->numFines)++;
 }
 
 static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max){
@@ -494,7 +493,7 @@ static void getDateMinMax(tAgencyDaily * agency, char * maxDailyDate, char * min
     int * minDate = agency -> date[MIN];
     int * maxDate = agency -> date[MAX];
     snprintf(maxDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", maxDate[DD], maxDate[MM], maxDate[YY]);
-    snprintf(minDailyDate, MAX_DATE_LENGTH, "%d,%d,%d", minDate[DD], minDate[MM], minDate[YY]);
+    snprintf(minDailyDate, MAX_DATE_LENGTH, "%d/%d/%d", minDate[DD], minDate[MM], minDate[YY]);
 }
 
 static void avgData(tAgencyDaily * agency, tYear * year){
@@ -505,8 +504,8 @@ static void avgData(tAgencyDaily * agency, tYear * year){
         for(int j = 0; j < DAYS; j++){
             int c = year -> dateMtx[i][j].totalAmount;
             int d = year -> dateMtx[i][j].numFines;
-            if(c != 0){
-                float avg = c/d;
+            if(c != 0 && d != 0){
+                float avg = ((float) c) / d;
                 updateData(agency, avg, year -> year, i, j);
             }
         }
@@ -515,16 +514,14 @@ static void avgData(tAgencyDaily * agency, tYear * year){
 }
 
 static void updateData(tAgencyDaily * agency, float avg, int year, int month, int day){
-    float min = agency -> minAvg;
-    float max = agency -> maxAvg; 
-    if(min > avg){
-        min = avg;
+    if(agency -> minAvg == 0 || agency -> minAvg > avg){
+        agency -> minAvg = avg;
         agency -> date[MIN][DD] = day;
         agency -> date[MIN][MM] = month;
         agency -> date[MIN][YY] = year;
     }
-    if(max < avg){
-        max = avg;
+    if(agency -> maxAvg < avg){
+        agency -> maxAvg = avg;
         agency -> date[MAX][DD] = day;
         agency -> date[MAX][MM] = month;
         agency -> date[MAX][YY] = year;

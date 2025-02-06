@@ -121,7 +121,7 @@ int makeQuery4(cityADT city)
     while(hasNextQuery4(city))
     {
         // agency;maxDailyAvg;maxDailyDate;minDailyAvg;minDailyDate;spread
-        agency = nextQuery4(city, &maxDailyAvg, &minDailyAvg, maxDailyDate, minDailyDate);
+        agency = nextQuery4(city, &minDailyAvg, &maxDailyAvg, maxDailyDate, minDailyDate);
         
         maxDailyAvg = trunc(maxDailyAvg*100)/100;
         minDailyAvg = trunc(minDailyAvg*100)/100;
