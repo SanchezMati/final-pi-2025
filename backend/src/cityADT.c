@@ -474,7 +474,7 @@ static tYear* addYear(tYear* list, int year, int month, int day, int fineAmount)
 
 //Checkear
 static void addAmount(tYear * year, int amount, int month, int day){
-    tAmountDay amountDay = year -> dateMtx[month][day];
+    tAmountDay amountDay = year -> dateMtx[month-1][day-1];
     amountDay.totalAmount += amount;
     amountDay.numFines++;
 }
