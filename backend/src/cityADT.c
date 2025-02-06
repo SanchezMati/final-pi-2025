@@ -166,6 +166,8 @@ cityADT newCity(void)
     city->firstAgency = NULL;
     city->agencyIter = NULL;
 
+    city->firstAgencyDaily = NULL;
+
     return city;
 }
 
@@ -426,7 +428,7 @@ static tAgencyDaily* addAgencyDaily(tAgencyDaily* list, char* name, int fineAmou
 {
     errno = 0;
     int c;
-    if(list == NULL ||  (c = strcmp(list->name, name)) < 0)
+    if(list == NULL || (c = strcmp(list->name, name)) < 0)
     {
         tAgencyDaily* aux = calloc(1, sizeof(tAgencyDaily));
         if(aux == NULL || errno == ENOMEM)
