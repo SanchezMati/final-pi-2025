@@ -87,6 +87,8 @@ static void getMinMaxAvg(tAgencyDaily * agency, float * min, float * max);
 static void getDateMinMax(tAgencyDaily * agency, char * maxDailyDate, char * minDailyDate);
 static void avgData(tAgencyDaily * agency, tYear * year);
 static void updateData(tAgencyDaily * agency, float avg, int year, int month, int day);
+static void freeQuery4(tAgencyDaily * agency);
+static void freeQuery4YearsRec(tYear * year);
 
 void freeCity(cityADT city)
 {
